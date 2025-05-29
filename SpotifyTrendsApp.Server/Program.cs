@@ -1,3 +1,4 @@
+
 using SpotifyTrendsApp.Server.Services;
 
 namespace SpotifyTrendsApp.Server
@@ -26,7 +27,6 @@ namespace SpotifyTrendsApp.Server
                 client.DefaultRequestHeaders.Accept.Add(
                     new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             }).AddHttpMessageHandler<TokenAuthHeaderHandler>(); ;
-            builder.Services.AddHttpClient<ISpotifyService, SpotifyService>();
 
             var app = builder.Build();
 
