@@ -1,0 +1,74 @@
+# Build results
+bin/
+obj/
+Debug/
+Release/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet
+*.nupkg
+packages/
+
+# IDE
+.idea/
+.vscode/
+
+# Misc
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment settings
+appsettings.Development.json
+appsettings.json
+
+# Docker
+Dockerfile
+*.dockerignore
+
+# Generated files
+*.pdb
+*.exe
+*.dll
+*.runtimeconfig.json
+*.deps.json
+*.cache
+*.props
+*.targets
+*.editorconfig
+*.sourcelink.json
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# Static web assets
+staticwebassets/
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+
+# Coverage reports
+coverage/
+*.coveragexml
+*.codecov
+
+# Other
+launchSettings.json
+.github/
