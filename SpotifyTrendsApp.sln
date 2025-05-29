@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyTrendsApp.Server", "SpotifyTrendsApp.Server\SpotifyTrendsApp.Server.csproj", "{752130ED-7C1F-44D2-8BA0-7F19FD05EAA9}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "spotifytrendsapp.client", "spotifytrendsapp.client\spotifytrendsapp.client.esproj", "{7FCD7AE3-2863-4D5C-BAE8-03C681CFDDDE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{752130ED-7C1F-44D2-8BA0-7F19FD05EAA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{752130ED-7C1F-44D2-8BA0-7F19FD05EAA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{752130ED-7C1F-44D2-8BA0-7F19FD05EAA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{752130ED-7C1F-44D2-8BA0-7F19FD05EAA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FCD7AE3-2863-4D5C-BAE8-03C681CFDDDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FCD7AE3-2863-4D5C-BAE8-03C681CFDDDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FCD7AE3-2863-4D5C-BAE8-03C681CFDDDE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7FCD7AE3-2863-4D5C-BAE8-03C681CFDDDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FCD7AE3-2863-4D5C-BAE8-03C681CFDDDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FCD7AE3-2863-4D5C-BAE8-03C681CFDDDE}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {482C9BAB-F5E6-4EDC-BA4B-D2FC0FEE1EFE}
+	EndGlobalSection
+EndGlobal

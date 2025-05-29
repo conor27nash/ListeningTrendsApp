@@ -1,0 +1,40 @@
+# Build results
+build/
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# Visual Studio files
+.vs/
+*.user
+*.userosscache
+*.suo
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet
+*.nupkg
+packages/
+
+# IDE
+.idea/
+.vscode/
+
+# misc
+.DS_Store
+Thumbs.db
+
+# Docs
+docs/
+
+# Placeholder JSON files
+SpotifyTrendsApp.Server/PlaceholderJson/*.json
+
+# Application Settings
+**/appsettings.Development.json
