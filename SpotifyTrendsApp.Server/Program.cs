@@ -1,4 +1,3 @@
-
 using SpotifyTrendsApp.Server.Services;
 
 namespace SpotifyTrendsApp.Server
@@ -26,7 +25,13 @@ namespace SpotifyTrendsApp.Server
                 client.BaseAddress = new Uri("https://accounts.spotify.com");
                 client.DefaultRequestHeaders.Accept.Add(
                     new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-            }).AddHttpMessageHandler<TokenAuthHeaderHandler>(); ;
+            });
+            // .AddHttpMessageHandler<TokenAuthHeaderHandler>();
+
+            // builder.Services.AddHttpClient<TopItemsServiceClient>(client =>
+            // {
+            //     client.BaseAddress = new Uri(builder.Environment.IsDevelopment() ? "http://localhost:5000" : "https://topitemsservice.example.com");
+            // });
 
             var app = builder.Build();
 
@@ -43,8 +48,10 @@ namespace SpotifyTrendsApp.Server
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
-            app.UseHttpsRedirection();
+            else
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseAuthorization();
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace SpotifyTrendsWebApp.Server.Models;
+namespace SpotifyTrendsApp.Common.Models;
 
 public class Image
 {

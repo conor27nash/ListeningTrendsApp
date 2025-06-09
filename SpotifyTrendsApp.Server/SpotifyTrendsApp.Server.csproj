@@ -22,9 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\spotifytrendsapp.client\spotifytrendsapp.client.esproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
+    <ProjectReference Include="..\SpotifyTrendsApp.Common\SpotifyTrendsApp.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

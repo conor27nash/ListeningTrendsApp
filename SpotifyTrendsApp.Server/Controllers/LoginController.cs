@@ -16,27 +16,27 @@ namespace SpotifyTrendsApp.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ReceiveToken([FromBody] AccessToken token, [FromServices] ITokenService TokenService)
+        public async Task<IActionResult> ReceiveToken([FromBody] AccessToken code, [FromServices] ITokenService TokenService)
         {
-            if (token == null || string.IsNullOrEmpty(token.token))
+            if (code == null || string.IsNullOrEmpty(code.code))
             {
                 return BadRequest("Invalid token");
             }
 
-            var AccessResponse = await TokenService.GetAccessTokenAsync(token.token); //access token
+            var AccessResponse = await TokenService.GetAccessTokenAsync(code.code); //access token
             if (AccessResponse == null)
             {
                 return BadRequest("Failed to retrieve access token");
             };
         
-            _logger.LogInformation($"Received token: {token}");
+            _logger.LogInformation($"Received token: {code}");
             
             return Ok(new { message = "Token received successfully" });
         }
 
         public class AccessToken
         {
-            public string token { get; set; }
+            public string code { get; set; }
         }
         
     }

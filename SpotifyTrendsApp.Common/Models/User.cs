@@ -1,6 +1,6 @@
-using System;
+using System.Collections.Generic;
 
-namespace SpotifyTrendsWebApp.Server.Models;
+namespace SpotifyTrendsApp.Common.Models;
 
 public class User
 {

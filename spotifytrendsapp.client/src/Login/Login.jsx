@@ -1,14 +1,14 @@
-import './login.css';
+import './Login.css';
 import { useEffect, useState } from 'react';
 
 function Login() {
     const [token, setToken] = useState("")
     const CLIENT_ID = "4c4f2ecd3bf648d49adc7846d0091831"; // Replace with your Spotify client ID
-    const REDIRECT_URI = "https://localhost:5173/callback";
+    const REDIRECT_URI = "https://localhost:5173/";
     const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
     const RESPONSE_TYPE = "token";
 
-    useEffect(() => {
+    useEffect(async () => {
         const hash = window.location.hash
         let token = window.localStorage.getItem("token")
 
@@ -19,8 +19,8 @@ function Login() {
             window.localStorage.setItem("token", token)
         }
 
-        setToken(token)
-        postToken(token)
+        await setToken(token)
+        await postToken(token)
 
     }, [])
 
@@ -28,16 +28,6 @@ function Login() {
         setToken("")
         window.localStorage.removeItem("token")
     }
-
- //async function populateWeatherData() {
-    //    const response = await fetch('weatherforecast');
-    //    const data = await response.json();
-    //    setForecasts(data);
-    //}
-
-
-
-
 
     const postToken = async (_token) => {
         try {

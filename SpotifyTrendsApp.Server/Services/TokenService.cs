@@ -39,7 +39,18 @@ public class TokenService : ITokenService
 
             var requestContent = new FormUrlEncodedContent(requestBody);
 
+            _logger.LogInformation("Sending request to Spotify API: {RequestBody}", requestBody);
+
             var response = await _httpClient.PostAsync("api/token", requestContent);
+
+            _logger.LogInformation("Received response from Spotify API: {StatusCode}", response.StatusCode);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Spotify API returned error: {ErrorContent}", errorContent);
+            }
+
             response.EnsureSuccessStatusCode();
 
             var responseBody = await response.Content.ReadFromJsonAsync<OAuthTokenResponse>();
