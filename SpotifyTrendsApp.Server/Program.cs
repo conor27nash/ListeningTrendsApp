@@ -60,6 +60,8 @@ namespace SpotifyTrendsApp.Server
 
             app.MapFallbackToFile("/index.html");
 
+            app.Urls.Add("http://0.0.0.0:5000");
+
             app.Run();
         }
     }

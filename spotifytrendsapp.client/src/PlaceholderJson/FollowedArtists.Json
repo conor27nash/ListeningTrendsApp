@@ -1,0 +1,178 @@
+{
+  "artists": {
+    "href": "https://api.spotify.com/v1/me/following?type=artist&limit=20&locale=en-US,en;q%3D0.9,en-GB;q%3D0.8",
+    "limit": 20,
+    "next": null,
+    "cursors": {
+      "after": null
+    },
+    "total": 5,
+    "items": [
+      {
+        "external_urls": {
+          "spotify": "https://open.spotify.com/artist/3H7ZnFF0cggMv4Bbu9sAoA"
+        },
+        "followers": {
+          "href": null,
+          "total": 264
+        },
+        "genres": [],
+        "href": "https://api.spotify.com/v1/artists/3H7ZnFF0cggMv4Bbu9sAoA",
+        "id": "3H7ZnFF0cggMv4Bbu9sAoA",
+        "images": [
+          {
+            "url": "https://i.scdn.co/image/ab67616d0000b2730f8baa865c059992ce103968",
+            "height": 640,
+            "width": 640
+          },
+          {
+            "url": "https://i.scdn.co/image/ab67616d00001e020f8baa865c059992ce103968",
+            "height": 300,
+            "width": 300
+          },
+          {
+            "url": "https://i.scdn.co/image/ab67616d000048510f8baa865c059992ce103968",
+            "height": 64,
+            "width": 64
+          }
+        ],
+        "name": "Youan",
+        "popularity": 8,
+        "type": "artist",
+        "uri": "spotify:artist:3H7ZnFF0cggMv4Bbu9sAoA"
+      },
+      {
+        "external_urls": {
+          "spotify": "https://open.spotify.com/artist/0daugAjUgbJSqdlyYNwIbT"
+        },
+        "followers": {
+          "href": null,
+          "total": 506007
+        },
+        "genres": [ "edm" ],
+        "href": "https://api.spotify.com/v1/artists/0daugAjUgbJSqdlyYNwIbT",
+        "id": "0daugAjUgbJSqdlyYNwIbT",
+        "images": [
+          {
+            "url": "https://i.scdn.co/image/ab6761610000e5ebc2403e7a97ee0fd9b8b121ce",
+            "height": 640,
+            "width": 640
+          },
+          {
+            "url": "https://i.scdn.co/image/ab67616100005174c2403e7a97ee0fd9b8b121ce",
+            "height": 320,
+            "width": 320
+          },
+          {
+            "url": "https://i.scdn.co/image/ab6761610000f178c2403e7a97ee0fd9b8b121ce",
+            "height": 160,
+            "width": 160
+          }
+        ],
+        "name": "Vicetone",
+        "popularity": 64,
+        "type": "artist",
+        "uri": "spotify:artist:0daugAjUgbJSqdlyYNwIbT"
+      },
+      {
+        "external_urls": {
+          "spotify": "https://open.spotify.com/artist/134GdR5tUtxJrf8cpsfpyY"
+        },
+        "followers": {
+          "href": null,
+          "total": 137319
+        },
+        "genres": [],
+        "href": "https://api.spotify.com/v1/artists/134GdR5tUtxJrf8cpsfpyY",
+        "id": "134GdR5tUtxJrf8cpsfpyY",
+        "images": [
+          {
+            "url": "https://i.scdn.co/image/ab6761610000e5eb254ec0918b3826d4304aa8df",
+            "height": 640,
+            "width": 640
+          },
+          {
+            "url": "https://i.scdn.co/image/ab67616100005174254ec0918b3826d4304aa8df",
+            "height": 320,
+            "width": 320
+          },
+          {
+            "url": "https://i.scdn.co/image/ab6761610000f178254ec0918b3826d4304aa8df",
+            "height": 160,
+            "width": 160
+          }
+        ],
+        "name": "Elliphant",
+        "popularity": 52,
+        "type": "artist",
+        "uri": "spotify:artist:134GdR5tUtxJrf8cpsfpyY"
+      },
+      {
+        "external_urls": {
+          "spotify": "https://open.spotify.com/artist/7Ln80lUS6He07XvHI8qqHH"
+        },
+        "followers": {
+          "href": null,
+          "total": 30187044
+        },
+        "genres": [ "indie", "garage rock" ],
+        "href": "https://api.spotify.com/v1/artists/7Ln80lUS6He07XvHI8qqHH",
+        "id": "7Ln80lUS6He07XvHI8qqHH",
+        "images": [
+          {
+            "url": "https://i.scdn.co/image/ab6761610000e5eb7da39dea0a72f581535fb11f",
+            "height": 640,
+            "width": 640
+          },
+          {
+            "url": "https://i.scdn.co/image/ab676161000051747da39dea0a72f581535fb11f",
+            "height": 320,
+            "width": 320
+          },
+          {
+            "url": "https://i.scdn.co/image/ab6761610000f1787da39dea0a72f581535fb11f",
+            "height": 160,
+            "width": 160
+          }
+        ],
+        "name": "Arctic Monkeys",
+        "popularity": 88,
+        "type": "artist",
+        "uri": "spotify:artist:7Ln80lUS6He07XvHI8qqHH"
+      },
+      {
+        "external_urls": {
+          "spotify": "https://open.spotify.com/artist/7MqnCTCAX6SsIYYdJCQj9B"
+        },
+        "followers": {
+          "href": null,
+          "total": 994835
+        },
+        "genres": [ "drum and bass", "dubstep", "electronic rock" ],
+        "href": "https://api.spotify.com/v1/artists/7MqnCTCAX6SsIYYdJCQj9B",
+        "id": "7MqnCTCAX6SsIYYdJCQj9B",
+        "images": [
+          {
+            "url": "https://i.scdn.co/image/ab6761610000e5eb4a45def215a47635d17d8a7b",
+            "height": 640,
+            "width": 640
+          },
+          {
+            "url": "https://i.scdn.co/image/ab676161000051744a45def215a47635d17d8a7b",
+            "height": 320,
+            "width": 320
+          },
+          {
+            "url": "https://i.scdn.co/image/ab6761610000f1784a45def215a47635d17d8a7b",
+            "height": 160,
+            "width": 160
+          }
+        ],
+        "name": "Pendulum",
+        "popularity": 64,
+        "type": "artist",
+        "uri": "spotify:artist:7MqnCTCAX6SsIYYdJCQj9B"
+      }
+    ]
+  }
+}

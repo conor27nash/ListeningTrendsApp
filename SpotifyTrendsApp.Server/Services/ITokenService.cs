@@ -19,6 +19,18 @@ namespace SpotifyTrendsApp.Server.Services
         /// <returns>OAuth token response containing new access token</returns>
         Task<TokenInfo> RefreshAccessTokenAsync(string refreshToken);
         
-        TokenInfo CurrentToken { get; }
+        /// <summary>
+        /// Gets the stored refresh token
+        /// </summary>
+        /// <returns>The stored refresh token, or null if not available</returns>
+        Task<string?> GetStoredRefreshTokenAsync();
+        
+        /// <summary>
+        /// Updates the stored refresh token
+        /// </summary>
+        /// <param name="refreshToken">The refresh token to store</param>
+        /// <returns>A task that represents the asynchronous operation</returns>
+        Task<string?> GetStoredAccessTokenAsync();
+           TokenInfo CurrentToken { get; set; }
     }
 }

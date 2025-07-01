@@ -5,7 +5,10 @@ services:
       context: spotifytrendsapp.client
       dockerfile: Dockerfile
     ports:
-      - "5173:80"
+      - "5173:5173"
+    volumes:
+      - ./spotifytrendsapp.client:/app      # mount local source into container
+      - /app/node_modules                   # preserve container node_modules
   server:
     build:
       context: .

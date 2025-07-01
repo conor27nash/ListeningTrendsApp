@@ -1,0 +1,15 @@
+{
+  "display_name": "nash_conor",
+  "external_urls": {
+    "spotify": "https://open.spotify.com/user/nash_conor"
+  },
+  "followers": {
+    "href": null,
+    "total": 9
+  },
+  "href": "https://api.spotify.com/v1/users/nash_conor",
+  "id": "nash_conor",
+  "images": [],
+  "type": "user",
+  "uri": "spotify:user:nash_conor"
+}

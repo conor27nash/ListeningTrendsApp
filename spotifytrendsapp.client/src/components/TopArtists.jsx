@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getTopArtists } from '../api/api';
+import { TopItemsService_getTopArtists } from '../api/api';
 
 const TopArtists = () => {
   const [artists, setArtists] = useState([]);
@@ -9,7 +9,7 @@ const TopArtists = () => {
   useEffect(() => {
     const fetchArtists = async () => {
       try {
-        const data = await getTopArtists();
+        const data = await TopItemsService_getTopArtists();
         setArtists(data.items);
       } catch (err) {
         setError(err);

@@ -1,0 +1,79 @@
+.top-artists-page {
+  padding: 20px;
+  color: white;
+}
+
+.artists-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.artist-card {
+  position: relative;
+  flex: 1 1 calc(20% - 20px);
+  margin: 10px;
+  background: #222;
+  color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.artist-card img {
+  width: 100%;
+  height: auto;
+}
+
+.artist-info {
+  padding: 10px;
+}
+
+.artist-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+}
+
+.artist-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.artist-info .followers {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.artist-rank {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background-color: #1db954;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .artist-card {
+    flex: 1 1 calc(33.333% - 20px);
+  }
+}
+
+@media (max-width: 768px) {
+  .artist-card {
+    flex: 1 1 calc(50% - 20px);
+  }
+}
+
+@media (max-width: 480px) {
+  .artist-card {
+    flex: 1 1 100%;
+  }
+}

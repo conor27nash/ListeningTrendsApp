@@ -24,6 +24,11 @@ if (app.Environment.IsDevelopment())
 // Commented out HTTPS redirection to avoid issues in the container
 // app.UseHttpsRedirection();
 
+app.UseCors(builder =>
+    builder.WithOrigins("http://localhost:5173")
+           .AllowAnyHeader()
+           .AllowAnyMethod());
+
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"

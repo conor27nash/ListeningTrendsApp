@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getTopTracks } from '../api/api';
+import { TopItemsService_getTopTracks } from '../api/api';
 
 const TopTracks = () => {
   const [tracks, setTracks] = useState([]);
@@ -9,7 +9,7 @@ const TopTracks = () => {
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        const data = await getTopTracks();
+        const data = await TopItemsService_getTopTracks();
         setTracks(data.items);
       } catch (err) {
         setError(err);

@@ -45,12 +45,14 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
-                target,
+            '/api/login': {
+                target: 'http://spotifytrends-server-1:5000',
+                changeOrigin: true,
                 secure: false
             }
         },
         port: 5173,
+        host: "0.0.0.0",
         https: isDocker ? false : {
             key: fs.readFileSync(keyFilePath),
             cert: fs.readFileSync(certFilePath),

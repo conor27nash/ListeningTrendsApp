@@ -25,17 +25,5 @@ COPY . .
 # Build the React app
 RUN npm run build
 
-# Use the official Nginx image to serve the built app
-FROM nginx:alpine
-
-# Set permissions for the Nginx directory
-RUN chmod -R 755 /usr/share/nginx/html
-
-# Copy the built files to the Nginx container
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Expose port 80
-EXPOSE 80
-
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Replace Nginx with Vite development server
+CMD ["npm", "run", "dev", "--", "--host"]
