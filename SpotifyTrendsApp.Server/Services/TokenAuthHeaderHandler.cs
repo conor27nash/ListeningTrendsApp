@@ -32,7 +32,7 @@ public class TokenAuthHeaderHandler : DelegatingHandler
             var refreshedToken = await _tokenService.RefreshAccessTokenAsync(_tokenService.CurrentToken.RefreshToken);
             if (refreshedToken != null)
             {
-                _tokenService.CurrentToken = refreshedToken; // Update the current token
+                _tokenService.CurrentToken = refreshedToken;
             }
         }
 

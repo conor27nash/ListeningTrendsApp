@@ -1,6 +1,5 @@
 using System.Net.Http.Headers;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.OAuth;
 using SpotifyTrendsApp.Server.Models;
 
 namespace SpotifyTrendsApp.Server.Services;
@@ -11,8 +10,7 @@ public class TokenService : ITokenService
     private readonly IConfiguration _configuration;
     private readonly ILogger<TokenService> _logger;
     private TokenInfo _currentToken;
-    private string? _storedAccessToken;
-    private string? _storedRefreshToken;
+
     public TokenInfo CurrentToken
     {
         get => _currentToken;
@@ -24,6 +22,7 @@ public class TokenService : ITokenService
         _httpClient = httpClient;
         _configuration = configuration;
         _logger = logger;
+        _currentToken = null!;
     }
 
     public async Task<TokenInfo> GetAccessTokenAsync(string code)
@@ -47,7 +46,9 @@ public class TokenService : ITokenService
             // Add Authorization header with Base64 encoded client_id:client_secret
             var authCredentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{clientId}:{clientSecret}"));
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authCredentials);
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+            // Request JSON response from token endpoint
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             var requestContent = new FormUrlEncodedContent(requestBody);
 
@@ -67,16 +68,15 @@ public class TokenService : ITokenService
 
             var responseBody = await response.Content.ReadFromJsonAsync<AuthTokenResponse>() ?? throw new InvalidOperationException("Failed to deserialize OAuth token response");
 
-            _logger.LogWarning(responseBody.refresh_token);
-
-            _currentToken = new TokenInfo
+            var token = new TokenInfo
             {
-                AccessToken = responseBody.access_token ?? throw new InvalidOperationException("AccessToken is null"),
-                RefreshToken = responseBody.refresh_token ?? "",
+                AccessToken = responseBody.access_token!,  
+                RefreshToken = responseBody.refresh_token ?? string.Empty,
                 ExpiresAt = DateTime.UtcNow.AddSeconds(responseBody.expires_in)
             };
 
-            return _currentToken;
+            _currentToken = token;
+            return token;
         }
         catch (HttpRequestException ex)
         {
@@ -105,23 +105,25 @@ public class TokenService : ITokenService
 
             var authCredentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{clientId}:{clientSecret}"));
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authCredentials);
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+            // Request JSON response for refresh endpoint
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             var response = await _httpClient.PostAsync(tokenEndpoint, requestContent);
             response.EnsureSuccessStatusCode();
 
             var responseBody = await response.Content.ReadFromJsonAsync<AuthTokenResponse>() ?? throw new InvalidOperationException("Failed to deserialize OAuth token response");
 
-            _currentToken = new TokenInfo
+            var token = new TokenInfo
             {
-                AccessToken = responseBody.access_token,
-                // Keep the existing refresh token if a new one isn't provided
-                RefreshToken = responseBody.refresh_token ?? _currentToken?.RefreshToken ?? refreshToken,
+                AccessToken = responseBody.access_token!,  
+                RefreshToken = responseBody.refresh_token ?? refreshToken,
                 ExpiresAt = DateTime.UtcNow.AddSeconds(responseBody.expires_in)
             };
 
+            _currentToken = token;
             _logger.LogInformation("Successfully refreshed access token");
-            return _currentToken;
+            return token;
         }
         catch (HttpRequestException ex)
         {
@@ -131,22 +133,16 @@ public class TokenService : ITokenService
     }
 
     public async Task<string?> GetStoredRefreshTokenAsync()
-    {
-        // Logic to retrieve the stored refresh token
-        return await Task.FromResult(_storedRefreshToken);
-    }
+        => await Task.FromResult(_currentToken?.RefreshToken);
 
     public async Task<string?> GetStoredAccessTokenAsync()
-    {
-        // Logic to retrieve the stored access token
-        return await Task.FromResult(_storedAccessToken);
-    }
+        => await Task.FromResult(_currentToken?.AccessToken);
 }
 public class AuthTokenResponse
 {
-    public string access_token { get; set; }
-    public string token_type { get; set; }
+    public string? access_token { get; set; }
+    public string? token_type { get; set; }
     public int expires_in { get; set; }
-    public string refresh_token { get; set; }
-    public string scope { get; set; }
+    public string? refresh_token { get; set; }
+    public string? scope { get; set; }
 }

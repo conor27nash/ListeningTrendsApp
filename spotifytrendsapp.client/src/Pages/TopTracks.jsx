@@ -1,14 +1,32 @@
-import React, { useState } from 'react';
-import tracksData from '../PlaceholderJson/Toptracks.json'; // Placeholder data
+import React, { useState, useEffect } from 'react';
+import { TopItemsService_getTopTracks } from '../api/api';
 import TimeRangeToggle from '../components/TimeRangeToggle/TimeRangeToggle';
 import TrackCard from '../components/TrackListing/TrackListingCard';
 import RecommendationModal from '../components/RecommendationModal/RecommendationModal';
 import './TopTracks.css';
 
 const TopTracksPage = () => {
-  const [range, setRange] = useState('short');
+  const [range, setRange] = useState('short_term');
+  const [tracksData, setTracksData] = useState({ items: [] });
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTrack, setSelectedTrack] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    TopItemsService_getTopTracks(range)
+      .then(data => {
+        setTracksData({ items: data.items });
+        setCurrentPage(1);
+      })
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [range]);
+
+  if (loading) return <div>Loading top tracks...</div>;
+  if (error) return <div>Error loading tracks: {error}</div>;
 
   const itemsPerPage = 10;
   const totalItems = tracksData.items.length;

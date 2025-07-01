@@ -3,7 +3,7 @@ import './TimeRangeToggle.css';
 
 const TimeRangeToggle = ({ current, onChange }) => (
   <div className="time-toggle">
-    {['short', 'medium', 'long'].map(term => (
+    {['short_term', 'medium_term', 'long_term'].map(term => (
       <button
         key={term}
         className={term === current ? 'active' : ''}

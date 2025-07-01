@@ -1,4 +1,8 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using SpotifyTrendsApp.Server.Services;
+using System.Net.Http.Headers;
 
 namespace SpotifyTrendsApp.Server
 {
@@ -14,34 +18,66 @@ namespace SpotifyTrendsApp.Server
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
 
+            // Add JWT authentication
+            var jwtSettings = builder.Configuration.GetSection("Jwt");
+            // Ensure JWT key is present
+            var keyString = jwtSettings.GetValue<string>("Key")
+                ?? throw new InvalidOperationException("JWT key is not configured in appsettings");
+            var key = Encoding.UTF8.GetBytes(keyString);
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtSettings.GetValue<string>("Issuer"),
+                    ValidateAudience = true,
+                    ValidAudience = jwtSettings.GetValue<string>("Audience"),
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuerSigningKey = true
+                };
+            });
+            builder.Services.AddAuthorization();
+
             // Add services to the container.
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddScoped<ITokenService, TokenService>();
-            builder.Services.AddHttpClient<ITokenService, TokenService>(client =>
+            builder.Services.AddMemoryCache(); 
+            builder.Services.AddSingleton<ITokenService, TokenService>();
+
+            builder.Services.AddHttpClient("Spotify", client =>
             {
                 client.BaseAddress = new Uri("https://accounts.spotify.com");
                 client.DefaultRequestHeaders.Accept.Add(
                     new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             });
-            // .AddHttpMessageHandler<TokenAuthHeaderHandler>();
-
-            // builder.Services.AddHttpClient<TopItemsServiceClient>(client =>
-            // {
-            //     client.BaseAddress = new Uri(builder.Environment.IsDevelopment() ? "http://localhost:5000" : "https://topitemsservice.example.com");
-            // });
+            // Add HTTP client for TopItemsService proxy
+            builder.Services.AddHttpClient("TopItemsService", client =>
+            {
+                var url = builder.Environment.IsDevelopment()
+                ? "http://localhost:5002"    // your host-mapped port
+                : "http://topitems:5000";     // Docker-only hostname
+                client.BaseAddress = new Uri(url);
+                client.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+            });
+            builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
 
+            app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCors(builder =>
                 builder.WithOrigins("http://localhost:5173") // React app URL
                 .AllowAnyHeader()
                 .AllowAnyMethod());
-
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
