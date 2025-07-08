@@ -1,32 +1,61 @@
-import React, { useState } from 'react';
-import tracksData from '../PlaceholderJson/Toptracks.json';
+import React, { useState, useEffect } from 'react';
+import { getRecentlyPlayed } from '../api/api';
 import TrackCard from '../components/TrackListing/TrackListingCard';
 import './RecentlyPlayed.css';
 
 const RecentlyPlayedPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [recentTracks, setRecentTracks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [cursors, setCursors] = useState({ after: null, before: null });
   const itemsPerPage = 10;
 
-  const totalItems = tracksData.items.length;
+  useEffect(() => {
+    loadRecentTracks();
+  }, []);
+
+  const loadRecentTracks = async (after = null, before = null) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getRecentlyPlayed(50, after, before);
+      setRecentTracks(data.items || []);
+      setCursors(data.cursors || { after: null, before: null });
+      setCurrentPage(1);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <div>Loading recently played tracks...</div>;
+  if (error) return <div>Error loading tracks: {error}</div>;
+
+  const totalItems = recentTracks.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const startIdx = (currentPage - 1) * itemsPerPage;
-  const currentTracks = tracksData.items.slice(startIdx, startIdx + itemsPerPage);
-
-  // Generate mock "played at" timestamps (pretend they were played 5 minutes apart)
-  const now = new Date();
-  const addMinutes = (date, minutes) => new Date(date.getTime() - minutes * 60000);
+  const currentTracks = recentTracks.slice(startIdx, startIdx + itemsPerPage);
 
   return (
     <div className="recently-played-page">
       <h2>Recently Played</h2>
+      <div className="navigation-buttons">
+        <button onClick={() => loadRecentTracks()} disabled={loading}>
+          🔄 Refresh
+        </button>
+      </div>
       <div className="tracks-grid">
-        {currentTracks.map((track, index) => {
-          const playedAt = addMinutes(now, startIdx * 5 + index * 5);
+        {currentTracks.map((item, index) => {
+          const playedAt = new Date(item.played_at);
           return (
-            <div key={track.id} className="recent-card">
-              <TrackCard track={track} position={startIdx + index} />
-              <p className="played-at">Played at: {playedAt.toLocaleTimeString()}</p>
+            <div key={`${item.track.id}-${item.played_at}`} className="recent-card">
+              <TrackCard track={item.track} position={startIdx + index} />
+              <p className="played-at">
+                Played at: {playedAt.toLocaleString()}
+              </p>
             </div>
           );
         })}

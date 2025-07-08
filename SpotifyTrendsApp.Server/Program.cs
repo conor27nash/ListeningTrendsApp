@@ -67,6 +67,16 @@ namespace SpotifyTrendsApp.Server
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
             });
+            // Add HTTP client for RecentlyPlayedService proxy
+            builder.Services.AddHttpClient("RecentlyPlayedService", client =>
+            {
+                // Use environment variable or fallback to Docker service name
+                var url = builder.Configuration.GetValue<string>("RecentlyPlayedService:BaseUrl") 
+                    ?? "http://recentlyplayed:5000";
+                client.BaseAddress = new Uri(url);
+                client.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+            });
             builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
