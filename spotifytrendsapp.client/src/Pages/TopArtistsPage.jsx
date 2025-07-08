@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TopItemsService_getTopArtists } from '../api/api';
+import { getTopArtists } from '../api/topItems';
 import TimeRangeToggle from '../components/TimeRangeToggle/TimeRangeToggle';
 import ArtistCard from '../components/ArtistListing/ArtistCard';
 import RecommendationModal from '../components/RecommendationModal/RecommendationModal';
@@ -16,7 +16,7 @@ const TopArtistsPage = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    TopItemsService_getTopArtists(range)
+    getTopArtists(range)
       .then(data => {
         setArtistsData({ items: data.items });
         setCurrentPage(1);

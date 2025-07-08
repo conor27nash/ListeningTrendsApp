@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getRecentlyPlayed } from '../api/api';
+import { getRecentlyPlayed } from '../api/recentlyPlayed';
 import TrackCard from '../components/TrackListing/TrackListingCard';
 import './RecentlyPlayed.css';
 

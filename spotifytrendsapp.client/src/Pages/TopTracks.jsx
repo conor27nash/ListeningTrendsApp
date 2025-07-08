@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TopItemsService_getTopTracks } from '../api/api';
+import { getTopTracks } from '../api/topItems';
 import TimeRangeToggle from '../components/TimeRangeToggle/TimeRangeToggle';
 import TrackCard from '../components/TrackListing/TrackListingCard';
 import RecommendationModal from '../components/RecommendationModal/RecommendationModal';
@@ -16,7 +16,7 @@ const TopTracksPage = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    TopItemsService_getTopTracks(range)
+    getTopTracks(range)
       .then(data => {
         setTracksData({ items: data.items });
         setCurrentPage(1);

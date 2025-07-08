@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { saveTracks, removeSavedTracks, checkSavedTracks } from '../../api/api';
+import { saveTracks, removeSavedTracks, checkSavedTracks } from '../../api/tracks';
 import './SaveTrackButton.css';
 
 const SaveTrackButton = ({ trackId, trackName, onSaveStatusChange }) => {

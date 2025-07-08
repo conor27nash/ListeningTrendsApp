@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getSavedTracks, saveTracks, removeSavedTracks, checkSavedTracks } from '../api/api';
+import { getSavedTracks, saveTracks, removeSavedTracks, checkSavedTracks } from '../api/tracks';
 import TrackCard from '../components/TrackListing/TrackListingCard';
 import './SavedTracks.css';
 
