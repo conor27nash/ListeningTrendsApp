@@ -1,0 +1,65 @@
+.save-track-button {
+  position: relative;
+  display: inline-block;
+}
+
+.heart-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+.heart-btn:hover:not(:disabled) {
+  background: rgba(29, 185, 84, 0.1);
+  transform: scale(1.1);
+}
+
+.heart-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.heart-btn.saved {
+  color: #1db954;
+}
+
+.heart-btn.saved:hover:not(:disabled) {
+  background: rgba(220, 53, 69, 0.1);
+}
+
+.error-message {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #dc3545;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  z-index: 10;
+  margin-top: 4px;
+}
+
+.error-message::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid #dc3545;
+}

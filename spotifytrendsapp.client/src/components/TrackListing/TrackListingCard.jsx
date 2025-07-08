@@ -1,7 +1,8 @@
 import React from 'react';
+import SaveTrackButton from '../SaveTrackButton/SaveTrackButton';
 import './TrackListingCard.css';
 
-const TrackCard = ({ track, position, onClick = () => {} }) => {
+const TrackCard = ({ track, position, onClick = () => {}, showSaveButton = true }) => {
   const imageUrl = track.album.images[1]?.url;
   const artistNames = track.artists.map(a => a.name).join(', ');
 
@@ -14,6 +15,11 @@ const TrackCard = ({ track, position, onClick = () => {} }) => {
         <p>{artistNames}</p>
         <p className="album">{track.album.name}</p>
       </div>
+      {showSaveButton && (
+        <div className="track-actions">
+          <SaveTrackButton trackId={track.id} trackName={track.name} />
+        </div>
+      )}
     </div>
   );
 };
