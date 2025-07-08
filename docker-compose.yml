@@ -21,11 +21,13 @@ services:
       - topitems
       - recentlyplayed
       - trackservice
+      - artistservice
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - TopItemsService__BaseUrl=http://topitems:5000
       - RecentlyPlayedService__BaseUrl=http://recentlyplayed:5000
       - TrackService__BaseUrl=http://trackservice:5000
+      - ArtistService__BaseUrl=http://artistservice:5000
   topitems:
     build:
       context: TopItemsService
@@ -45,6 +47,14 @@ services:
   trackservice:
     build:
       context: TrackService
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  artistservice:
+    build:
+      context: ArtistService
       dockerfile: Dockerfile
     expose:
       - "5000"
