@@ -9,15 +9,24 @@ services:
     volumes:
       - ./spotifytrendsapp.client:/app      # mount local source into container
       - /app/node_modules                   # preserve container node_modules
+    depends_on:
+      - server
   server:
     build:
       context: .
       dockerfile: SpotifyTrendsApp.Server/Dockerfile
     ports:
       - "5000:5000"
+    depends_on:
+      - topitems
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TopItemsService__BaseUrl=http://topitems:5000
   topitems:
     build:
       context: TopItemsService
       dockerfile: Dockerfile
-    ports:
-      - "5002:5000"
+    expose:
+      - "5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development

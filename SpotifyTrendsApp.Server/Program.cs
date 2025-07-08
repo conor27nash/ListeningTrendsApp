@@ -60,9 +60,9 @@ namespace SpotifyTrendsApp.Server
             // Add HTTP client for TopItemsService proxy
             builder.Services.AddHttpClient("TopItemsService", client =>
             {
-                var url = builder.Environment.IsDevelopment()
-                ? "http://localhost:5002"    // your host-mapped port
-                : "http://topitems:5000";     // Docker-only hostname
+                // Use environment variable or fallback to Docker service name
+                var url = builder.Configuration.GetValue<string>("TopItemsService:BaseUrl") 
+                    ?? "http://topitems:5000";
                 client.BaseAddress = new Uri(url);
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));

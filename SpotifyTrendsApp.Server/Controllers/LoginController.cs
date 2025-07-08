@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Web;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SpotifyTrendsApp.Server.Controllers
 {
@@ -94,38 +95,39 @@ namespace SpotifyTrendsApp.Server.Controllers
             return Ok(new { message = "Token received successfully" });
         }
 
+        [Authorize]
         [HttpPost("refresh")]
-        public async Task<IActionResult> RefreshToken(
-            [FromServices] ITokenService TokenService,
-            [FromBody] RefreshTokenRequest? request)
-        {
-            // Use provided refreshToken or fallback to stored one
-            var refreshToken = request?.refreshToken;
+        public async Task<IActionResult> RefreshToken()
+         {
+            // read Spotify refresh token from JWT claims
+            var refreshToken = User.FindFirst("refresh_token")?.Value;
             if (string.IsNullOrEmpty(refreshToken))
-            {
-                refreshToken = await TokenService.GetStoredRefreshTokenAsync();
-            }
-            if (string.IsNullOrEmpty(refreshToken))
-            {
-                return BadRequest("No refresh token provided or stored");
-            }
-            var refreshedToken = await TokenService.RefreshAccessTokenAsync(refreshToken);
-            if (refreshedToken == null || string.IsNullOrEmpty(refreshedToken.AccessToken))
-            {
-                return BadRequest("Failed to refresh token");
-            }
-            return Ok(new { token = refreshedToken.AccessToken, refreshToken = refreshedToken.RefreshToken });
-        }
+                return Unauthorized("No Spotify refresh token available");
+            // get new Spotify tokens
+            var updatedToken = await _tokenService.RefreshAccessTokenAsync(refreshToken);
+            // build new JWT
+            var jwtSection = _config.GetSection("Jwt");
+            var keyBytes = Encoding.UTF8.GetBytes(jwtSection.GetValue<string>("Key")!);
+            var creds = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256);
+            var claims = new[] {
+                new Claim("access_token", updatedToken.AccessToken),
+                new Claim("refresh_token", updatedToken.RefreshToken)
+            };
+            var jwt = new JwtSecurityToken(
+                issuer: jwtSection["Issuer"],
+                audience: jwtSection["Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(jwtSection.GetValue<int>("ExpiresInMinutes")),
+                signingCredentials: creds);
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(jwt);
+            return Ok(new { token = tokenString });
+         }
 
         public class CodeRequest
         {
             public string? code { get; set; }
         }   
 
-        public class RefreshTokenRequest
-        {
-            public string? refreshToken { get; set; }
-        }
-        
+        // Removed RefreshTokenRequest class as it's no longer needed
     }
 }
