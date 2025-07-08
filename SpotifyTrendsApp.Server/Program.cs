@@ -100,6 +100,17 @@ namespace SpotifyTrendsApp.Server
                     new MediaTypeWithQualityHeaderValue("application/json"));
             });
             
+            // Add HTTP client for UserService proxy
+            builder.Services.AddHttpClient("UserService", client =>
+            {
+                // Use environment variable or fallback to Docker service name
+                var url = builder.Configuration.GetValue<string>("UserService:BaseUrl") 
+                    ?? "http://userservice:5000";
+                client.BaseAddress = new Uri(url);
+                client.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+            });
+            
             builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
