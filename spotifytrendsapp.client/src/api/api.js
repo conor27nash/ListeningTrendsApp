@@ -1,25 +1,19 @@
 export const LoginService_BASE_URL = 'http://localhost:5000';
 
-/**
- * Wrapper to include Authorization header and auto-refresh JWT on 401.
- */
 export async function fetchWithAuth(url, options) {
-  // get current token
   let token = localStorage.getItem('spotify_access_token');
-  // initial refresh if none
   if (!token) {
     try {
       const data = await refreshToken();
       token = data.token || data;
       if (token) localStorage.setItem('spotify_access_token', token);
     } catch {
-      // ignore refresh failure here
     }
   }
-  // attach auth header
   options.headers = { ...options.headers, ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+  
   let response = await fetch(url, options);
-  // on 401, attempt refresh and retry once
+  
   if (response.status === 401) {
     try {
       const data = await refreshToken();
@@ -30,7 +24,7 @@ export async function fetchWithAuth(url, options) {
         response = await fetch(url, options);
       }
     } catch {
-      // ignore
+
     }
   }
   return response;
@@ -84,7 +78,6 @@ export const getRecentlyPlayed = async (limit = 50, after = null, before = null)
   return await response.json();
 };
 
-// Track Service API functions
 export const getTrack = async (id, market = null) => {
   const queryParams = new URLSearchParams();
   if (market) queryParams.append('market', market);
@@ -168,7 +161,6 @@ export const checkSavedTracks = async (trackIds) => {
   return await response.json();
 };
 
-// User API functions
 export const getUserProfile = async () => {
   const url = `${LoginService_BASE_URL}/api/userproxy/profile`;
   const response = await fetchWithAuth(url, {

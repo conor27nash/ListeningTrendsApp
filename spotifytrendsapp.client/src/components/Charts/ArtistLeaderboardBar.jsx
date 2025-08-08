@@ -58,8 +58,8 @@ export default function ArtistLeaderboardRanks({
           enabled: true,
           formatter() { return `#${rows[this.point.index].position}`; },
           style: {
-            color: '#fff',      // white text
-            textOutline: 'none' // remove shadow
+            color: '#fff',
+            textOutline: 'none'
           }
         },
 

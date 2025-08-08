@@ -26,8 +26,8 @@ const TopTracksPage = () => {
   }, [range]);
 
   if (loading) return <div className="loading">
-                            <div className="spinner"></div>
-                        </div>;
+    <div className="spinner"></div>
+  </div>;
   if (error) return <div>Error loading tracks: {error}</div>;
 
   const itemsPerPage = 10;

@@ -8,7 +8,6 @@ const fmtFollowers = (n = 0) =>
     n >= 1e3 ? (n / 1e3).toFixed(1) + 'k' :
     String(n);
 
-// Convert "spotify:artist:ID" → "https://open.spotify.com/artist/ID"
 function spotifyUriToUrl(uri) {
     if (!uri || typeof uri !== 'string' || !uri.startsWith('spotify:')) return null;
     return `https://open.spotify.com/${uri.replace('spotify:', '').replace(/:/g, '/')}`;
@@ -16,7 +15,7 @@ function spotifyUriToUrl(uri) {
 
 export default function PopularityFollowersScatter({ data }) {
     if (!Array.isArray(data) || data.length === 0) {
-        return null; // handled at dashboard level ideally
+        return null;
     }
 
     const points = useMemo(() => {
@@ -34,7 +33,7 @@ export default function PopularityFollowersScatter({ data }) {
 
             return {
                 name: d.artistName,
-                spotifyLink: d.spotifyLink, // attach for click handler
+                spotifyLink: d.spotifyLink,
                 x: popularity,
                 y: followers,
                 z: combinedScore,

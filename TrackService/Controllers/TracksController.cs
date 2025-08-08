@@ -19,7 +19,6 @@ namespace TrackService.Controllers
             _logger = logger;
         }
 
-        // GET /api/tracks/{id} - Get a single track
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTrack(
             string id, 
@@ -74,7 +73,6 @@ namespace TrackService.Controllers
             }
         }
 
-        // GET /api/tracks/several - Get several tracks
         [HttpGet("several")]
         public async Task<IActionResult> GetSeveralTracks(
             [FromHeader] string Authorization,
@@ -95,7 +93,6 @@ namespace TrackService.Controllers
                     return BadRequest("Track IDs are required.");
                 }
 
-                // Validate track IDs count (max 50)
                 var trackIds = ids.Split(',');
                 if (trackIds.Length > 50)
                 {
@@ -137,7 +134,6 @@ namespace TrackService.Controllers
             }
         }
 
-        // GET /api/tracks/saved - Get user's saved tracks
         [HttpGet("saved")]
         public async Task<IActionResult> GetSavedTracks(
             [FromHeader] string Authorization,
@@ -153,7 +149,6 @@ namespace TrackService.Controllers
                     return Unauthorized("Bearer token is required.");
                 }
 
-                // Validate and clamp parameters
                 limit = Math.Min(Math.Max(limit, 1), 50);
                 offset = Math.Max(offset, 0);
 
@@ -195,7 +190,6 @@ namespace TrackService.Controllers
             }
         }
 
-        // PUT /api/tracks/save - Save tracks for user
         [HttpPut("save")]
         public async Task<IActionResult> SaveTracks(
             [FromHeader] string Authorization,
@@ -251,7 +245,6 @@ namespace TrackService.Controllers
             }
         }
 
-        // DELETE /api/tracks/remove - Remove saved tracks
         [HttpDelete("remove")]
         public async Task<IActionResult> RemoveSavedTracks(
             [FromHeader] string Authorization,
@@ -307,7 +300,6 @@ namespace TrackService.Controllers
             }
         }
 
-        // GET /api/tracks/check-saved - Check if tracks are saved
         [HttpGet("check-saved")]
         public async Task<IActionResult> CheckSavedTracks(
             [FromHeader] string Authorization,
@@ -327,7 +319,6 @@ namespace TrackService.Controllers
                     return BadRequest("Track IDs are required.");
                 }
 
-                // Validate track IDs count (max 50)
                 var trackIds = ids.Split(',');
                 if (trackIds.Length > 50)
                 {

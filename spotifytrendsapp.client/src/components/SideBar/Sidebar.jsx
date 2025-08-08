@@ -18,7 +18,6 @@ const Sidebar = () => {
                 ☰
             </div>
             <div className={`sidebar ${isOpen ? 'open' : ''}`}>
-                {/* Login component at top of sidebar */}
                 <Login />
                 <ul>
                     <li><NavLink to="/" end className={({ isActive }) => isActive ? 'active' : ''}>Home</NavLink></li>

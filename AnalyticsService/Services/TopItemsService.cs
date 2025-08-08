@@ -35,7 +35,6 @@ namespace SpotifyTrends.AnalyticsService.Services
                 var topTracksData = await topTracksResponse.Content.ReadAsStringAsync();
                 _logger.LogDebug("Raw response from TopItems service: {Content}", topTracksData.Length > 500 ? topTracksData.Substring(0, 500) + "..." : topTracksData);
 
-                // Parse JSON manually to avoid serialization conflicts
                 var tracks = ParseTracksFromJson(topTracksData);
                 return tracks;
             }
@@ -64,7 +63,6 @@ namespace SpotifyTrends.AnalyticsService.Services
                 var topArtistsData = await topArtistsResponse.Content.ReadAsStringAsync();
                 _logger.LogDebug("Raw response from TopItems service: {Content}", topArtistsData.Length > 500 ? topArtistsData.Substring(0, 500) + "..." : topArtistsData);
 
-                // Parse JSON manually to avoid serialization conflicts
                 var artists = ParseArtistsFromJson(topArtistsData);
                 return artists;
             }
@@ -83,11 +81,9 @@ namespace SpotifyTrends.AnalyticsService.Services
                 var root = document.RootElement;
                 var tracks = new List<Track>();
 
-                // Check if response has "items" array (Spotify API format)
                 JsonElement itemsElement;
                 if (root.ValueKind == JsonValueKind.Object && root.TryGetProperty("items", out itemsElement))
                 {
-                    // Response is { "items": [...] }
                     foreach (var item in itemsElement.EnumerateArray())
                     {
                         tracks.Add(ParseTrackFromElement(item));
@@ -95,7 +91,6 @@ namespace SpotifyTrends.AnalyticsService.Services
                 }
                 else if (root.ValueKind == JsonValueKind.Array)
                 {
-                    // Response is direct array [...]
                     foreach (var item in root.EnumerateArray())
                     {
                         tracks.Add(ParseTrackFromElement(item));
@@ -119,11 +114,9 @@ namespace SpotifyTrends.AnalyticsService.Services
                 var root = document.RootElement;
                 var artists = new List<Artist>();
 
-                // Check if response has "items" array (Spotify API format)
                 JsonElement itemsElement;
                 if (root.ValueKind == JsonValueKind.Object && root.TryGetProperty("items", out itemsElement))
                 {
-                    // Response is { "items": [...] }
                     foreach (var item in itemsElement.EnumerateArray())
                     {
                         artists.Add(ParseArtistFromElement(item));
@@ -131,7 +124,6 @@ namespace SpotifyTrends.AnalyticsService.Services
                 }
                 else if (root.ValueKind == JsonValueKind.Array)
                 {
-                    // Response is direct array [...]
                     foreach (var item in root.EnumerateArray())
                     {
                         artists.Add(ParseArtistFromElement(item));

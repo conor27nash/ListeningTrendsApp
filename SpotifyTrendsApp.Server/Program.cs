@@ -18,9 +18,7 @@ namespace SpotifyTrendsApp.Server
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
 
-            // Add JWT authentication
             var jwtSettings = builder.Configuration.GetSection("Jwt");
-            // Ensure JWT key is present
             var keyString = jwtSettings.GetValue<string>("Key")
                 ?? throw new InvalidOperationException("JWT key is not configured in appsettings");
             var key = Encoding.UTF8.GetBytes(keyString);
@@ -44,7 +42,6 @@ namespace SpotifyTrendsApp.Server
             });
             builder.Services.AddAuthorization();
 
-            // Add services to the container, enabling JSON reference-cycle handling
             builder.Services.AddControllers()
                 .AddJsonOptions(opts =>
                 {
@@ -61,20 +58,16 @@ namespace SpotifyTrendsApp.Server
                 client.DefaultRequestHeaders.Accept.Add(
                     new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             });
-            // Add HTTP client for TopItemsService proxy
             builder.Services.AddHttpClient("TopItemsService", client =>
             {
-                // Use environment variable or fallback to Docker service name
                 var url = builder.Configuration.GetValue<string>("TopItemsService:BaseUrl") 
                     ?? "http://topitems:5000";
                 client.BaseAddress = new Uri(url);
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
             });
-            // Add HTTP client for RecentlyPlayedService proxy
             builder.Services.AddHttpClient("RecentlyPlayedService", client =>
             {
-                // Use environment variable or fallback to Docker service name
                 var url = builder.Configuration.GetValue<string>("RecentlyPlayedService:BaseUrl") 
                     ?? "http://recentlyplayed:5000";
                 client.BaseAddress = new Uri(url);
@@ -82,10 +75,8 @@ namespace SpotifyTrendsApp.Server
                     new MediaTypeWithQualityHeaderValue("application/json"));
             });
             
-            // Add HTTP client for TrackService proxy
             builder.Services.AddHttpClient("TrackService", client =>
             {
-                // Use environment variable or fallback to Docker service name
                 var url = builder.Configuration.GetValue<string>("TrackService:BaseUrl") 
                     ?? "http://trackservice:5000";
                 client.BaseAddress = new Uri(url);
@@ -93,10 +84,8 @@ namespace SpotifyTrendsApp.Server
                     new MediaTypeWithQualityHeaderValue("application/json"));
             });
             
-            // Add HTTP client for ArtistService proxy
             builder.Services.AddHttpClient("ArtistService", client =>
             {
-                // Use environment variable or fallback to Docker service name
                 var url = builder.Configuration.GetValue<string>("ArtistService:BaseUrl") 
                     ?? "http://artistservice:5000";
                 client.BaseAddress = new Uri(url);
@@ -104,17 +93,14 @@ namespace SpotifyTrendsApp.Server
                     new MediaTypeWithQualityHeaderValue("application/json"));
             });
             
-            // Add HTTP client for UserService proxy
             builder.Services.AddHttpClient("UserService", client =>
             {
-                // Use environment variable or fallback to Docker service name
                 var url = builder.Configuration.GetValue<string>("UserService:BaseUrl") 
                     ?? "http://userservice:5000";
                 client.BaseAddress = new Uri(url);
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
             });
-            // Add HTTP client for AnalyticsService proxy
             builder.Services.AddHttpClient("AnalyticsService", client =>
             {
                 var url = builder.Configuration.GetValue<string>("AnalyticsService:BaseUrl")
@@ -132,10 +118,9 @@ namespace SpotifyTrendsApp.Server
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCors(builder =>
-                builder.WithOrigins("http://localhost:5173") // React app URL
+                builder.WithOrigins("http://localhost:5173")
                 .AllowAnyHeader()
                 .AllowAnyMethod());
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

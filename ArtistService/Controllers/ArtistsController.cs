@@ -19,7 +19,6 @@ namespace ArtistService.Controllers
             _logger = logger;
         }
 
-        // GET /api/artists/{id} - Get a single artist
         [HttpGet("{id}")]
         public async Task<IActionResult> GetArtist(
             string id, 
@@ -69,7 +68,6 @@ namespace ArtistService.Controllers
             }
         }
 
-        // GET /api/artists/several - Get several artists
         [HttpGet("several")]
         public async Task<IActionResult> GetSeveralArtists(
             [FromHeader] string Authorization,
@@ -89,7 +87,6 @@ namespace ArtistService.Controllers
                     return BadRequest("Artist IDs are required.");
                 }
 
-                // Validate artist IDs count (max 50)
                 var artistIds = ids.Split(',');
                 if (artistIds.Length > 50)
                 {
@@ -127,7 +124,6 @@ namespace ArtistService.Controllers
             }
         }
 
-        // GET /api/artists/{id}/top-tracks - Get an artist's top tracks
         [HttpGet("{id}/top-tracks")]
         public async Task<IActionResult> GetArtistTopTracks(
             string id,
@@ -178,7 +174,6 @@ namespace ArtistService.Controllers
             }
         }
 
-        // GET /api/artists/{id}/albums - Get an artist's albums
         [HttpGet("{id}/albums")]
         public async Task<IActionResult> GetArtistAlbums(
             string id,
@@ -202,7 +197,6 @@ namespace ArtistService.Controllers
                     return BadRequest("Artist ID is required.");
                 }
 
-                // Validate and clamp parameters
                 limit = Math.Min(Math.Max(limit, 1), 50);
                 offset = Math.Max(offset, 0);
 

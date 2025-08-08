@@ -4,15 +4,11 @@ using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Register TopItemsService
 builder.Services.AddScoped<SpotifyTrends.AnalyticsService.Services.TopItemsService>();
-
-// Register AnalyticsService
 builder.Services.AddScoped<SpotifyTrends.AnalyticsService.Services.AnalyticsService>();
 
 // Add HTTP client for calling TopItems service
@@ -27,7 +23,6 @@ builder.Services.AddHttpClient("TopItemsService", client =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

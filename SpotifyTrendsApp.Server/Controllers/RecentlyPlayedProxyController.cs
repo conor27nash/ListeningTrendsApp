@@ -29,7 +29,6 @@ namespace SpotifyTrendsApp.Server.Controllers
         {
             _logger.LogDebug("RecentlyPlayedProxyController.GetRecentTracks called with limit={limit}, after={after}, before={before}", limit, after, before);
             
-            // retrieve Spotify token from authenticated user claims
             var tokenInfo = User.FindFirst("access_token")?.Value;
             if (string.IsNullOrEmpty(tokenInfo))
             {
@@ -40,7 +39,6 @@ namespace SpotifyTrendsApp.Server.Controllers
 
             var client = _httpClientFactory.CreateClient("RecentlyPlayedService");
             
-            // Build query parameters
             var queryParams = new List<string> { $"limit={limit}" };
             if (after.HasValue) queryParams.Add($"after={after.Value}");
             if (before.HasValue) queryParams.Add($"before={before.Value}");

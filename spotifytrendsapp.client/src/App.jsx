@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import './App.css';
 import Sidebar from './components/SideBar/Sidebar.jsx';
 import TopTracksPage from './Pages/TopTracks.jsx';
@@ -9,8 +8,6 @@ import RecentlyPlayedPage from './Pages/RecentlyPlayed.jsx';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 function App() {
-
-
     return (
         <Router>
             <div className="app-layout">
@@ -26,8 +23,6 @@ function App() {
             </div>
         </Router>
     );
-
-
 }
 
 export default App;

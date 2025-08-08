@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TimeRangeToggle from '../TimeRangeToggle/TimeRangeToggle';
 import { getAnalytics } from '../../api/analytics';
-
 import AlbumTreemap from '../Charts/AlbumTreemap';
 import ArtistLeaderboardRanks from '../Charts/ArtistLeaderboardBar';
 import RankVsPopularityScatter from '../Charts/RankVsPopularityScatter';
@@ -30,22 +29,23 @@ export default function Dashboard() {
 
     return (
         <div className="page">
-            <div className="container">
-                <div className="header">
-                    <h2>Spotify Trends</h2>
+            <div className="sticky-header">
+                <div className="sticky-header-content">
+                    <h2>Spotify Trends Analytics</h2>
                     <TimeRangeToggle current={timeRange} onChange={setTimeRange} />
                 </div>
-
-                    {loading && (
-                        <div className="dashboard-loading">
-                            <div className="spinner"></div>
-                        </div>
-                    )}
+            </div>
+            
+            <div className="container">
+                {loading && (
+                    <div className="dashboard-loading">
+                        <div className="spinner"></div>
+                    </div>
+                )}
                 {error && <p className="error">Error: {error}</p>}
 
                 {analytics && (
                     <>
-                        {/* Artist Insights Section */}
                         <section className="section-container">
                             <h3>Artist Insights</h3>
                             <p>How do my favorite artists rank compared to global popularity and followers?</p>
@@ -62,7 +62,6 @@ export default function Dashboard() {
                             </div>
                         </section>
 
-                        {/* Listening Timeline Section */}
                         <section className="section-container">
                             <h3>Listening Timeline</h3>
                             <p>How much of my listening is from older vs newer music?</p>
@@ -76,7 +75,6 @@ export default function Dashboard() {
                             </div>
                         </section>
 
-                        {/* Genre Exploration Section */}
                         <section className="section-container">
                             <h3>Genre Exploration</h3>
                             <p>Which genres dominate my listening and how do they compare?</p>
@@ -90,7 +88,6 @@ export default function Dashboard() {
                             </div>
                         </section>
 
-                        {/* Album Mosaic Section */}
                         <section className="section-container">
                             <h3>Album Mosaic</h3>
                             <p>A visual overview of albums I listen to most.</p>

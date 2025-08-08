@@ -28,7 +28,6 @@ namespace RecentlyPlayedService.Controllers
                 return Unauthorized("Bearer token is required.");
             }
 
-            // Build query parameters
             var queryParams = new List<string> { $"limit={Math.Min(Math.Max(limit, 1), 50)}" };
             if (after.HasValue) queryParams.Add($"after={after.Value}");
             if (before.HasValue) queryParams.Add($"before={before.Value}");

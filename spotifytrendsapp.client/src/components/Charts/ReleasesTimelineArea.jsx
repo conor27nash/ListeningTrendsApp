@@ -2,12 +2,10 @@ import React, { useMemo, useRef, useState, useCallback } from 'react';
 import Highcharts from '../../setupHighcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-// --- Helpers ---
 const MS_DAY = 24 * 3600 * 1000;
 const MS_YEAR_APPROX = 365 * MS_DAY;
 const MS_MONTH_APPROX = 30 * MS_DAY;
 
-// Escape HTML safely
 function escapeHTML(str) {
   if (typeof str !== 'string') return '';
   return str
@@ -18,13 +16,11 @@ function escapeHTML(str) {
     .replace(/'/g, '&#39;');
 }
 
-// Convert "spotify:track:ID" → "https://open.spotify.com/track/ID"
 function spotifyUriToUrl(uri) {
   if (!uri || typeof uri !== 'string' || !uri.startsWith('spotify:')) return null;
   return `https://open.spotify.com/${uri.replace('spotify:', '').replace(/:/g, '/')}`;
 }
 
-// Parse date safely and reject placeholders (e.g., year < 1900)
 function toValidDateISO(iso) {
   const d = new Date(iso);
   if (!isFinite(d)) return null;
@@ -35,7 +31,6 @@ function toValidDateISO(iso) {
 const yearStartUTC = (date) => Date.UTC(date.getUTCFullYear(), 0, 1);
 const monthStartUTC = (date) => Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1);
 
-// Group tracks by period key function
 function groupByPeriod(tracks, keyFn) {
   const buckets = new Map();
   tracks.forEach(t => {
@@ -63,7 +58,6 @@ function groupByPeriod(tracks, keyFn) {
 export default function ReleasesTimelineSmart({ data }) {
   const chartRef = useRef(null);
 
-  // Precompute full YEAR view across all data
   const { yearPoints, allMinX, allMaxX } = useMemo(() => {
     const arr = Array.isArray(data) ? data : [];
     const grouped = groupByPeriod(arr, yearStartUTC);
@@ -74,14 +68,12 @@ export default function ReleasesTimelineSmart({ data }) {
     };
   }, [data]);
 
-  // State for current mode and view range
-  const [mode, setMode] = useState('year'); // 'year' | 'month'
+  const [mode, setMode] = useState('year');
   const [viewRange, setViewRange] = useState(() => ({
     min: allMinX,
     max: allMaxX
   }));
 
-  // Build MONTH series on demand for a given range
   const monthSeriesForRange = useCallback((min, max) => {
     const arr = Array.isArray(data) ? data : [];
     const filtered = arr.filter(t => {
@@ -94,13 +86,11 @@ export default function ReleasesTimelineSmart({ data }) {
     return grouped.points;
   }, [data]);
 
-  // Decide mode based on range width
   const decideMode = useCallback((min, max) => {
     const width = (max ?? 0) - (min ?? 0);
     return width <= (MS_YEAR_APPROX + MS_MONTH_APPROX) ? 'month' : 'year';
   }, []);
 
-  // Build the series to render based on mode + range
   const renderSeries = useMemo(() => {
     if (!allMinX || !allMaxX) {
       return { points: [], xMin: undefined, xMax: undefined };
@@ -114,7 +104,7 @@ export default function ReleasesTimelineSmart({ data }) {
     return { points: pts, xMin: viewRange.min, xMax: viewRange.max };
   }, [mode, viewRange, yearPoints, allMinX, allMaxX, monthSeriesForRange]);
 
-  // Handle zoom/scroll via setExtremes
+
   const onSetExtremes = useCallback((e) => {
     const newMin = (typeof e.min === 'number') ? e.min : allMinX;
     const newMax = (typeof e.max === 'number') ? e.max : allMaxX;
@@ -122,7 +112,6 @@ export default function ReleasesTimelineSmart({ data }) {
     setMode(decideMode(newMin, newMax));
   }, [allMinX, allMaxX, decideMode]);
 
-  // Reset zoom button
   const resetZoom = () => {
     setViewRange({ min: allMinX, max: allMaxX });
     setMode('year');
@@ -132,7 +121,6 @@ export default function ReleasesTimelineSmart({ data }) {
     }
   };
 
-  // Tooltip shared for both modes, lists tracks in that period
   const tooltip = {
     useHTML: true,
     formatter() {

@@ -1,13 +1,9 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SpotifyTrendsApp.Server.Services;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using Microsoft.Extensions.Configuration;
-using System;
 using System.Web;
 using Microsoft.AspNetCore.Authorization;
 
@@ -28,7 +24,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             _tokenService = tokenService;
         }
 
-        // Step 1: redirect user to Spotify authorization URL
         [HttpGet("connect")]
         public IActionResult Connect()
         {
@@ -42,35 +37,33 @@ namespace SpotifyTrendsApp.Server.Controllers
             query["redirect_uri"] = redirectUri;
             query["scope"] = scopes;
             query["state"] = state;
+            query["show_dialog"] = "true";
             var url = "https://accounts.spotify.com/authorize?" + query.ToString();
             return Redirect(url);
         }
 
-        // Step 2: handle Spotify redirect, exchange code for tokens, and issue JWT
         [HttpGet("callback")]
         public async Task<IActionResult> Callback([FromQuery] string code, [FromQuery] string state)
         {
             if (string.IsNullOrEmpty(code)) return BadRequest("Missing code");
             var tokenInfo = await _tokenService.GetAccessTokenAsync(code);
             if (tokenInfo == null) return BadRequest("Token exchange failed");
-            // generate JWT
             var jwtSection = _config.GetSection("Jwt");
             var keyBytes = Encoding.UTF8.GetBytes(jwtSection.GetValue<string>("Key")!);
-            var creds = new Microsoft.IdentityModel.Tokens.SigningCredentials(
-                new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(keyBytes),
+            var creds = new SigningCredentials(
+                new SymmetricSecurityKey(keyBytes),
                 SecurityAlgorithms.HmacSha256);
             var claims = new[] {
-                new System.Security.Claims.Claim("access_token", tokenInfo.AccessToken),
-                new System.Security.Claims.Claim("refresh_token", tokenInfo.RefreshToken)
+                new Claim("access_token", tokenInfo.AccessToken),
+                new Claim("refresh_token", tokenInfo.RefreshToken)
             };
-            var jwt = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
+            var jwt = new JwtSecurityToken(
                 issuer: jwtSection["Issuer"],
                 audience: jwtSection["Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(jwtSection.GetValue<int>("ExpiresInMinutes")),
                 signingCredentials: creds);
-            var tokenString = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().WriteToken(jwt);
-            // Redirect back to client app with JWT in fragment
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(jwt);
             var clientUrl = _config["ClientApp:BaseUrl"] ?? "http://localhost:5173";
             return Redirect($"{clientUrl}/?token={tokenString}");
         }
@@ -84,7 +77,7 @@ namespace SpotifyTrendsApp.Server.Controllers
                 return BadRequest("Invalid token");
             }
 
-            var AccessResponse = await _tokenService.GetAccessTokenAsync(code.code); //access token
+            var AccessResponse = await _tokenService.GetAccessTokenAsync(code.code);
             if (AccessResponse == null)
             {
                 return BadRequest("Failed to retrieve access code");
@@ -99,13 +92,10 @@ namespace SpotifyTrendsApp.Server.Controllers
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken()
          {
-            // read Spotify refresh token from JWT claims
             var refreshToken = User.FindFirst("refresh_token")?.Value;
             if (string.IsNullOrEmpty(refreshToken))
                 return Unauthorized("No Spotify refresh token available");
-            // get new Spotify tokens
             var updatedToken = await _tokenService.RefreshAccessTokenAsync(refreshToken);
-            // build new JWT
             var jwtSection = _config.GetSection("Jwt");
             var keyBytes = Encoding.UTF8.GetBytes(jwtSection.GetValue<string>("Key")!);
             var creds = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256);
@@ -127,7 +117,5 @@ namespace SpotifyTrendsApp.Server.Controllers
         {
             public string? code { get; set; }
         }   
-
-        // Removed RefreshTokenRequest class as it's no longer needed
     }
 }

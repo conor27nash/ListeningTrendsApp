@@ -3,13 +3,11 @@ import Highcharts from '../../setupHighcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { getArtistColour } from '../utils/artistColours';
 
-// Convert "spotify:artist:ID" → "https://open.spotify.com/artist/ID"
 function spotifyUriToUrl(uri) {
     if (!uri || typeof uri !== 'string' || !uri.startsWith('spotify:')) return null;
     return `https://open.spotify.com/${uri.replace('spotify:', '').replace(/:/g, '/')}`;
 }
 
-// Marker shape by delta
 function shapeByDelta(delta) {
     if (delta >= 10) return 'triangle';
     if (delta <= -10) return 'triangle-down';

@@ -35,7 +35,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             return tokenInfo;
         }
 
-        // GET /api/artistsproxy/{id} - Get a single artist
         [HttpGet("{id}")]
         public async Task<IActionResult> GetArtist(string id)
         {
@@ -64,7 +63,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             }
         }
 
-        // GET /api/artistsproxy/several - Get several artists
         [HttpGet("several")]
         public async Task<IActionResult> GetSeveralArtists([FromQuery] string ids)
         {
@@ -93,7 +91,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             }
         }
 
-        // GET /api/artistsproxy/{id}/top-tracks - Get an artist's top tracks
         [HttpGet("{id}/top-tracks")]
         public async Task<IActionResult> GetArtistTopTracks(string id, [FromQuery] string market = "US")
         {
@@ -122,7 +119,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             }
         }
 
-        // GET /api/artistsproxy/{id}/albums - Get an artist's albums
         [HttpGet("{id}/albums")]
         public async Task<IActionResult> GetArtistAlbums(
             string id, 

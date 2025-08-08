@@ -26,7 +26,6 @@ namespace SpotifyTrendsApp.Server.Controllers
         {
             _logger.LogDebug("TopArtistsProxyController.Get called with timeRange={timeRange}", timeRange);
             
-            // retrieve Spotify token from authenticated user claims
             var tokenInfo = User.FindFirst("access_token")?.Value;
             if (string.IsNullOrEmpty(tokenInfo))
             {

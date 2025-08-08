@@ -1,4 +1,3 @@
-// src/setupHighcharts.js
 import Highcharts from 'highcharts';
 
 Highcharts.setOptions({
@@ -28,19 +27,17 @@ Highcharts.setOptions({
   colors: ['#1DB954','#58A6FF','#F1A33C','#FF5C8A','#C792EA','#4DD0E1','#FFD166','#7CDB67']
 });
 
-// Defensive init: handles both default export and plain module objects
+
 function init(mod) {
   const fn = (mod && typeof mod === 'object') ? mod.default : mod;
   if (typeof fn === 'function') fn(Highcharts);
 }
 
-// Use the classic module paths (resolve reliably with v11 + Vite)
 import * as HighchartsMore from 'highcharts/highcharts-more';
 import * as Accessibility from 'highcharts/modules/accessibility';
 import * as Treemap from 'highcharts/modules/treemap';
 import * as SolidGauge from 'highcharts/modules/solid-gauge';
 
-// Initialize (no packed-bubble)
 init(HighchartsMore);
 init(Accessibility);
 init(Treemap);

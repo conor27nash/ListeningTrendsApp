@@ -36,7 +36,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             return tokenInfo;
         }
 
-        // GET /api/userproxy/profile - Get current user's profile
         [HttpGet("profile")]
         public async Task<IActionResult> GetUserProfile()
         {
@@ -75,7 +74,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             }
         }
 
-        // GET /api/userproxy/following/artists - Get followed artists
         [HttpGet("following/artists")]
         public async Task<IActionResult> GetFollowedArtists(
             [FromQuery] string? after = null,
@@ -91,7 +89,6 @@ namespace SpotifyTrendsApp.Server.Controllers
 
                 var client = _httpClientFactory.CreateClient("UserService");
                 
-                // Build query parameters
                 var queryParams = new List<string> { $"limit={limit}" };
                 if (!string.IsNullOrEmpty(after)) queryParams.Add($"after={after}");
                 var queryString = string.Join("&", queryParams);

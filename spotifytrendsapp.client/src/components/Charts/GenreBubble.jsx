@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import Highcharts from '../../setupHighcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-// Stable colour from a string (UK spelling 💂)
 function getGenreColour(genre) {
   if (!genre) return '#999';
   let hash = 0;
@@ -29,7 +28,7 @@ export default function GenreBubble({ data = [], title = 'Genres (Bubble)' }) {
 
     const pts = arr.map(g => ({
       name: g.genre,
-      value: g.count ?? 0,         // packed bubble uses "value"
+      value: g.count ?? 0,         
       color: getGenreColour(g.genre),
       custom: { count: g.count ?? 0, genre: g.genre }
     }));

@@ -13,10 +13,8 @@ namespace SpotifyTrends.AnalyticsService.Services
 
         }
 
-        // Add your service methods below
         public async Task<AnalyticsData> GenerateAnalyticsAsync(string timeRange, string authorization)
         {
-            // Call TopItemsService to get top tracks and artists
             var topTracks = await _topItemsService.GetTopTracks(timeRange, authorization);
             var topArtists = await _topItemsService.GetTopArtists(timeRange, authorization);
 
@@ -47,10 +45,10 @@ namespace SpotifyTrends.AnalyticsService.Services
             return Task.FromResult(albumMosaic);
         }
 
-        public Task<TopArtist> GenerateTopArtist(List<Track> topTracksop)
+        public Task<TopArtist> GenerateTopArtist(List<Track> topTracks)
         {
-        // Find the artist that appears most frequently in the tracks
-        if (topTracksop == null || topTracksop.Count == 0)
+
+        if (topTracks == null || topTracks.Count == 0)
         {
             return Task.FromResult(new TopArtist
             {
@@ -63,7 +61,7 @@ namespace SpotifyTrends.AnalyticsService.Services
 
         var artistCounts = new Dictionary<string, (int count, string uri, List<Track> tracks)>();
 
-        foreach (var track in topTracksop)
+        foreach (var track in topTracks)
         {
             foreach (var artist in track.Artists)
             {
@@ -121,7 +119,7 @@ namespace SpotifyTrends.AnalyticsService.Services
                     if (releaseDate == "0" || releaseDate == "0000") return false;
                     DateTime parsedDate;
                     if (!DateTime.TryParse(releaseDate, out parsedDate)) return false;
-                    return parsedDate.Year > 1900; // Only allow plausible years
+                    return parsedDate.Year > 1900;
                 })
                 .Select(track => new TrackTimeline
                 {

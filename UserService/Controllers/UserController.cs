@@ -19,7 +19,6 @@ namespace UserService.Controllers
             _logger = logger;
         }
 
-        // GET /api/user/profile - Get current user's profile
         [HttpGet("profile")]
         public async Task<IActionResult> GetUserProfile(
             [FromHeader] string Authorization)
@@ -62,7 +61,6 @@ namespace UserService.Controllers
             }
         }
 
-        // GET /api/user/following/artists - Get followed artists
         [HttpGet("following/artists")]
         public async Task<IActionResult> GetFollowedArtists(
             [FromHeader] string Authorization,
@@ -77,7 +75,6 @@ namespace UserService.Controllers
                     return Unauthorized("Bearer token is required.");
                 }
 
-                // Validate and clamp parameters
                 limit = Math.Min(Math.Max(limit, 1), 50);
 
                 var queryParams = new List<string> { $"type=artist", $"limit={limit}" };

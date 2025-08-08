@@ -1,15 +1,11 @@
-﻿/* ...existing styles... */
-
-.app-layout {
+﻿.app-layout {
   display: flex;
   height: 100vh;
 }
 
-/* Sidebar has fixed width defined internally */
-
 .app-content {
   flex: 1;
-  margin-left: 220px; /* offset content from fixed sidebar width */
+  margin-left: 220px;
   padding: 1rem;
   overflow-y: auto;
 }

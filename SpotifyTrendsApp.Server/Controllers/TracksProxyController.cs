@@ -36,7 +36,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             return tokenInfo;
         }
 
-        // GET /api/tracksproxy/{id} - Get a single track
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTrack(string id, [FromQuery] string? market = null)
         {
@@ -69,7 +68,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             }
         }
 
-        // GET /api/tracksproxy/several - Get several tracks
         [HttpGet("several")]
         public async Task<IActionResult> GetSeveralTracks([FromQuery] string ids, [FromQuery] string? market = null)
         {
@@ -102,7 +100,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             }
         }
 
-        // GET /api/tracksproxy/saved - Get user's saved tracks
         [HttpGet("saved")]
         public async Task<IActionResult> GetSavedTracks([FromQuery] int limit = 20, [FromQuery] int offset = 0, [FromQuery] string? market = null)
         {
@@ -135,7 +132,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             }
         }
 
-        // PUT /api/tracksproxy/save - Save tracks for user
         [HttpPut("save")]
         public async Task<IActionResult> SaveTracks([FromBody] SaveTracksRequest request)
         {
@@ -167,7 +163,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             }
         }
 
-        // DELETE /api/tracksproxy/remove - Remove saved tracks
         [HttpDelete("remove")]
         public async Task<IActionResult> RemoveSavedTracks([FromBody] SaveTracksRequest request)
         {
@@ -199,7 +194,6 @@ namespace SpotifyTrendsApp.Server.Controllers
             }
         }
 
-        // GET /api/tracksproxy/check-saved - Check if tracks are saved
         [HttpGet("check-saved")]
         public async Task<IActionResult> CheckSavedTracks([FromQuery] string ids)
         {

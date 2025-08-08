@@ -69,8 +69,6 @@ namespace SpotifyTrendsApp.Server.Controllers
                 var error = await response.Content.ReadAsStringAsync();
                 return StatusCode((int)response.StatusCode, error);
             }
-            // Deserialize into DTO for a flat object graph
-            // Deserialize into DTO with camelCase and case-insensitive settings
             var jsonOptions = new System.Text.Json.JsonSerializerOptions
             {
                 PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,

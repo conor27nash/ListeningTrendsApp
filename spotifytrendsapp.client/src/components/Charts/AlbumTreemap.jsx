@@ -3,13 +3,11 @@ import Highcharts from '../../setupHighcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { getArtistColour } from '../utils/artistColours';
 
-// Convert "spotify:album:ID" → "https://open.spotify.com/album/ID"
 function spotifyUriToUrl(uri) {
     if (!uri || typeof uri !== 'string' || !uri.startsWith('spotify:')) return null;
     return `https://open.spotify.com/${uri.replace('spotify:', '').replace(/:/g, '/')}`;
 }
 
-// Lighten an HSL colour
 function lightenColour(hsl, percent = 20) {
     return hsl.replace(/(\d+)%\)$/, (_, l) => `${Math.min(100, parseInt(l, 10) + percent)}%)`);
 }
@@ -41,12 +39,11 @@ export default function AlbumTreemap({
 
             treemapData.push({
                 id: parentNodeId,
-                name: `${artist} (${info.totalCount})`, // show artist name + total count
+                name: `${artist} (${info.totalCount})`,
                 value: info.totalCount,
                 color: parentColor
             });
 
-            // Sort albums by plays
             info.albums.sort((a, b) => (b.count ?? 0) - (a.count ?? 0));
 
             info.albums.forEach((album, i) => {
@@ -77,7 +74,6 @@ export default function AlbumTreemap({
             useHTML: true,
             formatter() {
                 if (!this.point.parent) {
-                    // artist tile
                     return `<b>${this.point.name}</b>`;
                 }
                 const a = this.point.custom?.artistName ?? '';
