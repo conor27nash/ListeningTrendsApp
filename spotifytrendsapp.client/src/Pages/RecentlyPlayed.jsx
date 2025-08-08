@@ -30,7 +30,9 @@ const RecentlyPlayedPage = () => {
     }
   };
 
-  if (loading) return <div>Loading recently played tracks...</div>;
+  if (loading) return <div className="loading">
+                            <div className="spinner"></div>
+                        </div>;
   if (error) return <div>Error loading tracks: {error}</div>;
 
   const totalItems = recentTracks.length;

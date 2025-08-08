@@ -44,8 +44,12 @@ namespace SpotifyTrendsApp.Server
             });
             builder.Services.AddAuthorization();
 
-            // Add services to the container.
-            builder.Services.AddControllers();
+            // Add services to the container, enabling JSON reference-cycle handling
+            builder.Services.AddControllers()
+                .AddJsonOptions(opts =>
+                {
+                    opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+                });
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddMemoryCache(); 
@@ -106,6 +110,15 @@ namespace SpotifyTrendsApp.Server
                 // Use environment variable or fallback to Docker service name
                 var url = builder.Configuration.GetValue<string>("UserService:BaseUrl") 
                     ?? "http://userservice:5000";
+                client.BaseAddress = new Uri(url);
+                client.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+            });
+            // Add HTTP client for AnalyticsService proxy
+            builder.Services.AddHttpClient("AnalyticsService", client =>
+            {
+                var url = builder.Configuration.GetValue<string>("AnalyticsService:BaseUrl")
+                    ?? "http://analyticsservice:5000";
                 client.BaseAddress = new Uri(url);
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));

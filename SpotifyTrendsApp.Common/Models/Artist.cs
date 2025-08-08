@@ -14,9 +14,7 @@ public class Artist
     public string type { get; set; }
     public string uri { get; set; }
     public List<Image> images { get; set; }
-    public IEnumerable<string> genres { get; set; }
     public int popularity { get; set; }
-    public int followers { get; set; }
 }
 
 public class ArtistResponse

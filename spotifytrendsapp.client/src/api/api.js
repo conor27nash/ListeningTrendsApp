@@ -1,9 +1,9 @@
-const LoginService_BASE_URL = 'http://localhost:5000';
+export const LoginService_BASE_URL = 'http://localhost:5000';
 
 /**
  * Wrapper to include Authorization header and auto-refresh JWT on 401.
  */
-async function fetchWithAuth(url, options) {
+export async function fetchWithAuth(url, options) {
   // get current token
   let token = localStorage.getItem('spotify_access_token');
   // initial refresh if none

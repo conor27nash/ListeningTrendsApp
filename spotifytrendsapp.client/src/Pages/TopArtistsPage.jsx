@@ -25,7 +25,9 @@ const TopArtistsPage = () => {
       .finally(() => setLoading(false));
   }, [range]);
 
-  if (loading) return <div>Loading top artists...</div>;
+  if (loading) return <div className="loading">
+                            <div className="spinner"></div>
+                        </div>;
   if (error) return <div>Error loading artists: {error}</div>;
 
   const itemsPerPage = 10;

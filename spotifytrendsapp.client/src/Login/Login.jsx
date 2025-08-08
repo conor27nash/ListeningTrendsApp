@@ -1,7 +1,7 @@
 import './Login.css';
 import { useEffect, useState } from 'react';
 
-function Login({ onLoginSuccess }) {
+function Login({ onLoginSuccess = () => {} }) {
 
     const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem('spotify_access_token'));
 
@@ -25,26 +25,23 @@ function Login({ onLoginSuccess }) {
         localStorage.removeItem('tokenPosted');
         setIsLoggedIn(false);
         onLoginSuccess(false);
+        // Redirect to Home page after logout
+        window.location.href = '/';
     }
 
-    return (
-        <div className="App">
-            <header className="App-header">
-                <h1>Spotify React</h1>
-                {/* Show login link until user is authenticated */}
-                {!isLoggedIn ? (
-                    <a href={LOGIN_CONNECT_URL}>
-                        Login with Spotify
-                    </a>
-                ) : (
-                    <div>
-                        <h2>Logged in</h2>
-                        <button onClick={logout}>Logout</button>
-                    </div>
-                )}
-            </header>
+    // Compose login/logout content
+    const content = !isLoggedIn ? (
+        <button className="login-button" onClick={() => window.location.href = LOGIN_CONNECT_URL}>
+            Login with Spotify
+        </button>
+    ) : (
+        <div className="logout-section">
+            <h2>You are logged in</h2>
+            <button className="logout-button" onClick={logout}>Logout</button>
         </div>
     );
+    // Always render inline login
+    return <div>{content}</div>;
 }    
 
 export default Login;

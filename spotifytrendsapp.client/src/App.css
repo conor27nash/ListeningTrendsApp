@@ -1,8 +1,24 @@
-﻿#root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
+﻿/* ...existing styles... */
+
+.app-layout {
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar has fixed width defined internally */
+
+.app-content {
+  flex: 1;
+  margin-left: 220px; /* offset content from fixed sidebar width */
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 th, td {

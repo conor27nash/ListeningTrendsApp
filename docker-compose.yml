@@ -23,6 +23,7 @@ services:
       - trackservice
       - artistservice
       - userservice
+      - analyticsservice
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - TopItemsService__BaseUrl=http://topitems:5000
@@ -30,6 +31,7 @@ services:
       - TrackService__BaseUrl=http://trackservice:5000
       - ArtistService__BaseUrl=http://artistservice:5000
       - UserService__BaseUrl=http://userservice:5000
+      - AnalyticsService__BaseUrl=http://analyticsservice:5000
   topitems:
     build:
       context: TopItemsService
@@ -70,3 +72,14 @@ services:
       - "5000"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+  analyticsservice:
+    build:
+      context: .
+      dockerfile: AnalyticsService/Dockerfile
+    expose:
+      - "5000"
+    depends_on:
+      - topitems
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TopItemsService__BaseUrl=http://topitems:5000
