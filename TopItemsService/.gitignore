@@ -34,7 +34,6 @@ appsettings.Development.json
 appsettings.json
 
 # Docker
-Dockerfile
 *.dockerignore
 
 # Generated files
