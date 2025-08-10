@@ -20,7 +20,10 @@ const SaveTrackButton = ({ trackId, trackName, onSaveStatusChange }) => {
     }
   };
 
-  const handleToggleSave = async () => {
+  const handleToggleSave = async (event) => {
+    event.stopPropagation(); 
+    event.preventDefault();
+
     if (loading) return;
     
     setLoading(true);
