@@ -16,7 +16,7 @@
   background: rgba(18, 18, 18, 0.95); /* Semi-transparent Spotify dark */
   backdrop-filter: blur(10px);
   border-bottom: 1px solid #262626;
-  z-index: 1000;
+  z-index: 1;
   padding: 16px 24px;
 }
 
@@ -40,6 +40,9 @@
   max-width: 1120px;
   margin: 0 auto;
   padding: 0 24px;
+  @media screen and (max-width: 768px) {
+    max-width: -webkit-fill-available;    
+  }
 }
 
 /* Section container - full width with spacing between */

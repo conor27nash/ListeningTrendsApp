@@ -4,8 +4,8 @@
   font-size: 1.8rem;
   cursor: pointer;
   padding: 1rem;
-  background: #222;
   color: #fff;
+  z-index: 3;
 }
 
 .sidebar {
@@ -18,7 +18,7 @@
   color: white;
   padding-top: 60px;
   transition: transform 0.3s ease;
-  z-index: 1000;
+  z-index: 2;
 }
 
 .sidebar ul {
@@ -62,6 +62,6 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 3;
   }
 }

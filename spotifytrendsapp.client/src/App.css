@@ -21,3 +21,15 @@ th, td {
     padding-left: 1rem;
     padding-right: 1rem;
 }
+
+@media screen and (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .app-content {
+    margin-left: 0;
+    padding: 0.5rem;
+  }
+  
+}
