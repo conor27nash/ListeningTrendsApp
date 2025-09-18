@@ -1,0 +1,11 @@
+bin/
+obj/
+.git/
+Dockerfile
+README.md
+*.log
+*.tmp
+*.swp
+*.swo
+*.DS_Store
+Thumbs.db

@@ -1,0 +1,87 @@
+.track-card {
+  position: relative;
+  flex: 1 1 calc(25% - 20px);
+  margin: 10px;
+  background: #222;
+  color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.track-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.track-card img {
+  width: 100%;
+  height: auto;
+  border-bottom: 1px solid #333;
+}
+
+.track-info {
+  padding: 10px;
+}
+
+.track-info h4 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  color: #1db954;
+}
+
+.track-info p {
+  margin: 2px 0;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.track-info .album {
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+.track-rank {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background-color: #1db954;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.track-actions {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  gap: 5px;
+  z-index: 10;
+}
+
+.track-actions button {
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.track-actions button:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(1.1);
+}

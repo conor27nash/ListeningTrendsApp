@@ -1,78 +1,44 @@
-import './login.css';
+import './Login.css';
 import { useEffect, useState } from 'react';
 
-function Login() {
-    const [token, setToken] = useState("")
-    const CLIENT_ID = "4c4f2ecd3bf648d49adc7846d0091831"; // Replace with your Spotify client ID
-    const REDIRECT_URI = "https://localhost:5173/callback";
-    const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
-    const RESPONSE_TYPE = "token";
+function Login({ onLoginSuccess = () => {} }) {
+    const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem('spotify_access_token'));
+
+    const LOGIN_CONNECT_URL = `${window.location.origin}/api/login/connect`;
 
     useEffect(() => {
-        const hash = window.location.hash
-        let token = window.localStorage.getItem("token")
+        const params = new URLSearchParams(window.location.search);
+        const tokenFromUrl = params.get("token");
+        if (tokenFromUrl && !localStorage.getItem("tokenPosted")) {
+            localStorage.setItem('spotify_access_token', tokenFromUrl);
+            localStorage.setItem('tokenPosted', 'true');
+            setIsLoggedIn(true);
+            onLoginSuccess(true);
 
-        if (!token && hash) {
-            token = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1]
-
-            window.location.hash = ""
-            window.localStorage.setItem("token", token)
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
-
-        setToken(token)
-        postToken(token)
-
-    }, [])
+    }, [onLoginSuccess]);
 
     const logout = () => {
-        setToken("")
-        window.localStorage.removeItem("token")
+        localStorage.removeItem('spotify_access_token');
+        localStorage.removeItem('tokenPosted');
+        setIsLoggedIn(false);
+        onLoginSuccess(false);
+        window.location.href = '/';
     }
 
- //async function populateWeatherData() {
-    //    const response = await fetch('weatherforecast');
-    //    const data = await response.json();
-    //    setForecasts(data);
-    //}
-
-
-
-
-
-    const postToken = async (_token) => {
-        try {
-            const data ={token: _token}
-            const response = await fetch("login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
-            const apiResponse = await response.json()
-            console.log(apiResponse)
-
-        } catch (error) {
-            console.error("Error sending data:", error);
-        }
-
-    }
-
-    return (
-        <div className="App">
-            <header className="App-header">
-                <h1>Spotify React</h1>
-                {!token ?
-                    <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
-                        to Spotify</a>
-                    : <div>
-                        <h2>Logged in</h2>
-                        <p>Token: {token}</p>
-                        <button onClick={logout}>Logout</button>
-                    </div>}
-            </header>
+    const content = !isLoggedIn ? (
+        <button className="login-button" onClick={() => window.location.href = LOGIN_CONNECT_URL}>
+            Login with Spotify
+        </button>
+    ) : (
+        <div className="logout-section">
+            <h2>You are logged in</h2>
+            <button className="logout-button" onClick={logout}>Logout</button>
         </div>
     );
-}
+
+    return <div>{content}</div>;
+}    
 
 export default Login;

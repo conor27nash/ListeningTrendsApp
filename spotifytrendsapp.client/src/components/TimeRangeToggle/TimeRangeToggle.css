@@ -1,0 +1,19 @@
+.time-toggle {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.time-toggle button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #444;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.time-toggle button.active {
+  background-color: #1db954;
+}

@@ -29,7 +29,11 @@ public class TokenAuthHeaderHandler : DelegatingHandler
     {
         if (_tokenService.CurrentToken != null && _tokenService.CurrentToken.ExpiresAt <= DateTime.UtcNow)
         {
-            await _tokenService.RefreshAccessTokenAsync(_tokenService.CurrentToken.RefreshToken);
+            var refreshedToken = await _tokenService.RefreshAccessTokenAsync(_tokenService.CurrentToken.RefreshToken);
+            if (refreshedToken != null)
+            {
+                _tokenService.CurrentToken = refreshedToken;
+            }
         }
 
         return await _policy.ExecuteAsync(async () =>

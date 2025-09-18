@@ -1,7 +1,31 @@
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: teal
+
+.login-button,
+.logout-button {
+    background-color: #1db954;
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    margin-top: 1rem;
 }
+
+.login-button:hover,
+.logout-button:hover {
+    background-color: #17a44b;
+}
+
+.logout-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logout-section h2 {
+    margin-bottom: 1rem;
+    color: #333333;
+}
+

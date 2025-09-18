@@ -1,0 +1,87 @@
+.top-tracks-page {
+  padding: 20px;
+  color: white;
+}
+
+.tracks-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.track-card {
+  position: relative;
+  flex: 1 1 calc(20% - 20px);
+  margin: 10px;
+  background: #222;
+  color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .track-card {
+    flex: 1 1 calc(33.333% - 20px);
+  }
+}
+
+@media (max-width: 768px) {
+  .track-card {
+    flex: 1 1 calc(50% - 20px);
+  }
+}
+
+@media (max-width: 480px) {
+  .track-card {
+    flex: 1 1 100%;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  background-color: #1db954;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pagination button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  color: #ccc;
+  font-size: 1rem;
+}
+
+/* Loading spinner and error styling */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+.loading .spinner {
+  width: 48px;
+  height: 48px;
+  border: 6px solid rgba(29, 185, 84, 0.3);
+  border-top-color: #1DB954;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

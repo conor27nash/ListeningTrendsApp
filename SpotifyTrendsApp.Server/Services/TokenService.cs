@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Authentication.OAuth;
+using System.Net.Http.Headers;
+using System.Text;
 using SpotifyTrendsApp.Server.Models;
 
 namespace SpotifyTrendsApp.Server.Services;
@@ -9,22 +10,29 @@ public class TokenService : ITokenService
     private readonly IConfiguration _configuration;
     private readonly ILogger<TokenService> _logger;
     private TokenInfo _currentToken;
-    public TokenInfo CurrentToken => _currentToken;
+
+    public TokenInfo CurrentToken
+    {
+        get => _currentToken;
+        set => _currentToken = value;
+    }
 
     public TokenService(HttpClient httpClient, IConfiguration configuration, ILogger<TokenService> logger)
     {
         _httpClient = httpClient;
         _configuration = configuration;
         _logger = logger;
+        _currentToken = null!;
     }
 
     public async Task<TokenInfo> GetAccessTokenAsync(string code)
-    {   
+    {
         try
         {
-            var clientId = _configuration["Spotify:ClientId"];
-            var clientSecret = _configuration["Spotify:ClientSecret"];
-            var redirectUri = _configuration["Spotify:RedirectUri"];
+            var clientId = _configuration["Spotify:ClientId"] ?? throw new InvalidOperationException("ClientId is not configured");
+            var clientSecret = _configuration["Spotify:ClientSecret"] ?? throw new InvalidOperationException("ClientSecret is not configured");
+            var redirectUri = _configuration["Spotify:RedirectUri"] ?? throw new InvalidOperationException("RedirectUri is not configured");
+            var tokenEndpoint = _configuration["Spotify:TokenEndpoint"] ?? throw new InvalidOperationException("TokenEndpoint is not configured");
 
             _logger.LogInformation("Requesting access token for authorization code");
 
@@ -33,30 +41,40 @@ public class TokenService : ITokenService
                 { "grant_type", "authorization_code" },
                 { "code", code },
                 { "redirect_uri", redirectUri },
-                { "client_id", clientId },
-                { "client_secret", clientSecret }
+
             };
+            var authCredentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{clientId}:{clientSecret}"));
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authCredentials);
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             var requestContent = new FormUrlEncodedContent(requestBody);
 
-            var response = await _httpClient.PostAsync("api/token", requestContent);
-            response.EnsureSuccessStatusCode();
+            _logger.LogInformation("Sending request to Spotify API: {RequestBody}", requestBody);
 
-            var responseBody = await response.Content.ReadFromJsonAsync<OAuthTokenResponse>();
-            
-            if (responseBody == null)
+            var response = await _httpClient.PostAsync(tokenEndpoint, requestContent);
+
+            _logger.LogInformation("Received response from Spotify API: {StatusCode}", response.StatusCode);
+
+            if (!response.IsSuccessStatusCode)
             {
-                throw new InvalidOperationException("Failed to deserialize OAuth token response");
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Spotify API returned error: {ErrorContent}", errorContent);
             }
 
-            _currentToken = new TokenInfo
+            response.EnsureSuccessStatusCode();
+
+            var responseBody = await response.Content.ReadFromJsonAsync<AuthTokenResponse>() ?? throw new InvalidOperationException("Failed to deserialize OAuth token response");
+
+            var token = new TokenInfo
             {
-                AccessToken = responseBody.AccessToken,
-                RefreshToken = responseBody.RefreshToken,
-                ExpiresAt = DateTime.UtcNow.AddSeconds(double.Parse(responseBody.ExpiresIn))
+                AccessToken = responseBody.access_token!,  
+                RefreshToken = responseBody.refresh_token ?? string.Empty,
+                ExpiresAt = DateTime.UtcNow.AddSeconds(responseBody.expires_in)
             };
 
-            return _currentToken;
+            _currentToken = token;
+            return token;
         }
         catch (HttpRequestException ex)
         {
@@ -65,50 +83,63 @@ public class TokenService : ITokenService
         }
     }
 
-   public async Task<TokenInfo> RefreshAccessTokenAsync(string refreshToken)
-{
-    try
+    public async Task<TokenInfo> RefreshAccessTokenAsync(string refreshToken)
     {
-        var clientId = _configuration["Spotify:ClientId"];
-        var clientSecret = _configuration["Spotify:ClientSecret"];
+        try
+        {
+            var clientId = _configuration["Spotify:ClientId"] ?? throw new InvalidOperationException("ClientId is not configured");
+            var clientSecret = _configuration["Spotify:ClientSecret"] ?? throw new InvalidOperationException("ClientSecret is not configured");
+            var tokenEndpoint = _configuration["Spotify:TokenEndpoint"] ?? throw new InvalidOperationException("TokenEndpoint is not configured");
 
-        _logger.LogInformation("Refreshing access token");
+            _logger.LogInformation("Refreshing access token");
 
-        var requestBody = new Dictionary<string, string>
+            var requestBody = new Dictionary<string, string>
         {
             { "grant_type", "refresh_token" },
             { "refresh_token", refreshToken },
-            { "client_id", clientId },
-            { "client_secret", clientSecret }
         };
 
-        var requestContent = new FormUrlEncodedContent(requestBody);
+            var requestContent = new FormUrlEncodedContent(requestBody);
 
-        var response = await _httpClient.PostAsync("api/token", requestContent);
-        response.EnsureSuccessStatusCode();
+            var authCredentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{clientId}:{clientSecret}"));
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authCredentials);
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        var responseBody = await response.Content.ReadFromJsonAsync<OAuthTokenResponse>();
-        
-        if (responseBody == null)
-        {
-            throw new InvalidOperationException("Failed to deserialize OAuth token response");
+            var response = await _httpClient.PostAsync(tokenEndpoint, requestContent);
+            response.EnsureSuccessStatusCode();
+
+            var responseBody = await response.Content.ReadFromJsonAsync<AuthTokenResponse>() ?? throw new InvalidOperationException("Failed to deserialize OAuth token response");
+
+            var token = new TokenInfo
+            {
+                AccessToken = responseBody.access_token!,  
+                RefreshToken = responseBody.refresh_token ?? refreshToken,
+                ExpiresAt = DateTime.UtcNow.AddSeconds(responseBody.expires_in)
+            };
+
+            _currentToken = token;
+            _logger.LogInformation("Successfully refreshed access token");
+            return token;
         }
-
-        _currentToken = new TokenInfo
+        catch (HttpRequestException ex)
         {
-            AccessToken = responseBody.AccessToken,
-            // Keep the existing refresh token if a new one isn't provided
-            RefreshToken = responseBody.RefreshToken ?? _currentToken?.RefreshToken ?? refreshToken,
-            ExpiresAt = DateTime.UtcNow.AddSeconds(double.Parse(responseBody.ExpiresIn))
-        };
+            _logger.LogError(ex, "Failed to refresh access token from Spotify");
+            throw;
+        }
+    }
 
-        _logger.LogInformation("Successfully refreshed access token");
-        return _currentToken;
-    }
-    catch (HttpRequestException ex)
-    {
-        _logger.LogError(ex, "Failed to refresh access token from Spotify");
-        throw;
-    }
+    public async Task<string?> GetStoredRefreshTokenAsync()
+        => await Task.FromResult(_currentToken?.RefreshToken);
+
+    public async Task<string?> GetStoredAccessTokenAsync()
+        => await Task.FromResult(_currentToken?.AccessToken);
 }
+public class AuthTokenResponse
+{
+    public string? access_token { get; set; }
+    public string? token_type { get; set; }
+    public int expires_in { get; set; }
+    public string? refresh_token { get; set; }
+    public string? scope { get; set; }
 }

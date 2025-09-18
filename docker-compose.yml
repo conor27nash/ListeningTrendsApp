@@ -1,0 +1,85 @@
+version: '3.9'
+services:
+  client:
+    build:
+      context: spotifytrendsapp.client
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./spotifytrendsapp.client:/app      # mount local source into container
+      - /app/node_modules                   # preserve container node_modules
+    depends_on:
+      - server
+  server:
+    build:
+      context: .
+      dockerfile: SpotifyTrendsApp.Server/Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - topitems
+      - recentlyplayed
+      - trackservice
+      - artistservice
+      - userservice
+      - analyticsservice
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TopItemsService__BaseUrl=http://topitems:5000
+      - RecentlyPlayedService__BaseUrl=http://recentlyplayed:5000
+      - TrackService__BaseUrl=http://trackservice:5000
+      - ArtistService__BaseUrl=http://artistservice:5000
+      - UserService__BaseUrl=http://userservice:5000
+      - AnalyticsService__BaseUrl=http://analyticsservice:5000
+  topitems:
+    build:
+      context: TopItemsService
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  recentlyplayed:
+    build:
+      context: RecentlyPlayedService
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  trackservice:
+    build:
+      context: TrackService
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  artistservice:
+    build:
+      context: ArtistService
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  userservice:
+    build:
+      context: UserService
+      dockerfile: Dockerfile
+    expose:
+      - "5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  analyticsservice:
+    build:
+      context: .
+      dockerfile: AnalyticsService/Dockerfile
+    expose:
+      - "5000"
+    depends_on:
+      - topitems
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TopItemsService__BaseUrl=http://topitems:5000

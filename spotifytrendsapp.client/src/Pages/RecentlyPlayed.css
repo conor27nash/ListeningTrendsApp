@@ -1,0 +1,69 @@
+.recently-played-page {
+  padding: 20px;
+  color: white;
+}
+
+.tracks-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.recent-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(20% - 20px);
+  margin: 10px;
+}
+
+.played-at {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 6px;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .recent-card {
+    flex: 1 1 calc(33.333% - 20px);
+  }
+}
+
+@media (max-width: 768px) {
+  .recent-card {
+    flex: 1 1 calc(50% - 20px);
+  }
+}
+
+@media (max-width: 480px) {
+  .recent-card {
+    flex: 1 1 100%;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+.loading .spinner {
+  width: 48px;
+  height: 48px;
+  border: 6px solid rgba(29, 185, 84, 0.3);
+  border-top-color: #1DB954;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

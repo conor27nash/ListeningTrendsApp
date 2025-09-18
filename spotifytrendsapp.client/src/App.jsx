@@ -1,59 +1,28 @@
-import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import Login from './Login/Login.jsx';
+import Sidebar from './components/SideBar/Sidebar.jsx';
+import TopTracksPage from './Pages/TopTracks.jsx';
+import Home from './Pages/Home';
+import TopArtistsPage from './Pages/TopArtistsPage';
+import RecentlyPlayedPage from './Pages/RecentlyPlayed.jsx';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 function App() {
-    //const [forecasts, setForecasts] = useState();
-
-    //useEffect(() => {
-    //    populateWeatherData();
-    //}, []);
-
-    //const contents = forecasts === undefined
-    //    ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-    //    : <table className="table table-striped" aria-labelledby="tableLabel">
-    //        <thead>
-    //            <tr>
-    //                <th>Date</th>
-    //                <th>Temp. (C)</th>
-    //                <th>Temp. (F)</th>
-    //                <th>Summary</th>
-    //            </tr>
-    //        </thead>
-    //        <tbody>
-    //            {forecasts.map(forecast =>
-    //                <tr key={forecast.date}>
-    //                    <td>{forecast.date}</td>
-    //                    <td>{forecast.temperatureC}</td>
-    //                    <td>{forecast.temperatureF}</td>
-    //                    <td>{forecast.summary}</td>
-    //                </tr>
-    //            )}
-    //        </tbody>
-    //    </table>;
     return (
-        <div>
-            <div className="App">
-                <h1>Spotify Trends</h1>
-                <p>This component demonstrates fetching data from the server.</p>
+        <Router>
+            <div className="app-layout">
+                <Sidebar />
+                <div className="app-content">
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/top-tracks" element={<ProtectedRoute><TopTracksPage /></ProtectedRoute>} />
+                        <Route path="/top-artists" element={<ProtectedRoute><TopArtistsPage /></ProtectedRoute>} />
+                        <Route path="/recent-played" element={<ProtectedRoute><RecentlyPlayedPage /></ProtectedRoute>} />
+                    </Routes>
+                </div>
             </div>
-            <Login />
-        </div>
+        </Router>
     );
-    // return (
-    //    <div>
-    //        <h1 id="tableLabel">Weather forecast</h1>
-    //        <p>This component demonstrates fetching data from the server.</p>
-    //        {contents}
-    //    </div>
-    // );
-
-    //async function populateWeatherData() {
-    //    const response = await fetch('weatherforecast');
-    //    const data = await response.json();
-    //    setForecasts(data);
-    //}
-
 }
 
 export default App;
