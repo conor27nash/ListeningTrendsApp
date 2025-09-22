@@ -46,7 +46,7 @@ export default defineConfig({
     server: {
         proxy: {
             '/api/login': {
-                target: 'http://spotifytrends-server-1:5000',
+                target: 'http://listeningtrendsapp-server-1:5000',
                 changeOrigin: true,
                 secure: false
             }
