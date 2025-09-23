@@ -4,14 +4,13 @@ services:
     build:
       context: spotifytrendsapp.client
       dockerfile: Dockerfile
-      target: development
+      target: production
     ports:
-      - "5173:5173"
-    volumes:
-      - ./spotifytrendsapp.client:/app      
-      - /app/node_modules                  
+      - "80:80"
     depends_on:
       - server
+    restart: unless-stopped
+
   server:
     build:
       context: .
@@ -26,18 +25,24 @@ services:
       - userservice
       - analyticsservice
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
       - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
-      - SPOTIFY_REDIRECT_URI=${SPOTIFY_REDIRECT_URI:-http://localhost:5000/api/login/callback}
-      - CLIENT_APP_BASE_URL=${CLIENT_APP_BASE_URL:-http://localhost:5173}
+      - SPOTIFY_REDIRECT_URI=${SPOTIFY_REDIRECT_URI}
       - TopItemsService__BaseUrl=http://topitems:5000
       - RecentlyPlayedService__BaseUrl=http://recentlyplayed:5000
       - TrackService__BaseUrl=http://trackservice:5000
       - ArtistService__BaseUrl=http://artistservice:5000
       - UserService__BaseUrl=http://userservice:5000
       - AnalyticsService__BaseUrl=http://analyticsservice:5000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   topitems:
     build:
       context: TopItemsService
@@ -45,7 +50,9 @@ services:
     expose:
       - "5000"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: unless-stopped
+
   recentlyplayed:
     build:
       context: RecentlyPlayedService
@@ -53,7 +60,9 @@ services:
     expose:
       - "5000"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: unless-stopped
+
   trackservice:
     build:
       context: TrackService
@@ -61,7 +70,9 @@ services:
     expose:
       - "5000"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: unless-stopped
+
   artistservice:
     build:
       context: ArtistService
@@ -69,7 +80,9 @@ services:
     expose:
       - "5000"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: unless-stopped
+
   userservice:
     build:
       context: UserService
@@ -77,7 +90,9 @@ services:
     expose:
       - "5000"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: unless-stopped
+
   analyticsservice:
     build:
       context: .
@@ -87,5 +102,6 @@ services:
     depends_on:
       - topitems
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - TopItemsService__BaseUrl=http://topitems:5000
+    restart: unless-stopped

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SpotifyTrendsApp.Server.Services;
+using SpotifyTrendsApp.Server.Middleware;
 using System.Net.Http.Headers;
 
 namespace SpotifyTrendsApp.Server
@@ -18,10 +19,24 @@ namespace SpotifyTrendsApp.Server
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
 
+            // Validate critical configuration
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") 
+                ?? builder.Configuration["Jwt:Key"];
+            if (string.IsNullOrEmpty(jwtKey))
+                throw new InvalidOperationException("JWT_SECRET_KEY environment variable is required");
+            
+            var spotifyClientId = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_ID") 
+                ?? builder.Configuration["Spotify:ClientId"];
+            if (string.IsNullOrEmpty(spotifyClientId))
+                throw new InvalidOperationException("SPOTIFY_CLIENT_ID environment variable is required");
+                
+            var spotifyClientSecret = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_SECRET") 
+                ?? builder.Configuration["Spotify:ClientSecret"];
+            if (string.IsNullOrEmpty(spotifyClientSecret))
+                throw new InvalidOperationException("SPOTIFY_CLIENT_SECRET environment variable is required");
+
             var jwtSettings = builder.Configuration.GetSection("Jwt");
-            var keyString = jwtSettings.GetValue<string>("Key")
-                ?? throw new InvalidOperationException("JWT key is not configured in appsettings");
-            var key = Encoding.UTF8.GetBytes(keyString);
+            var key = Encoding.UTF8.GetBytes(jwtKey);
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -42,7 +57,10 @@ namespace SpotifyTrendsApp.Server
             });
             builder.Services.AddAuthorization();
 
-            builder.Services.AddControllers()
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<GlobalExceptionFilter>();
+            })
                 .AddJsonOptions(opts =>
                 {
                     opts.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
@@ -51,6 +69,18 @@ namespace SpotifyTrendsApp.Server
             builder.Services.AddSwaggerGen();
             builder.Services.AddMemoryCache(); 
             builder.Services.AddSingleton<ITokenService, TokenService>();
+            
+            // Add health checks
+            builder.Services.AddHealthChecks()
+                .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy())
+                .AddCheck("spotify-api", () => 
+                {
+                    // Basic check that configuration is available
+                    var spotifyConfig = builder.Configuration.GetSection("Spotify");
+                    return !string.IsNullOrEmpty(spotifyConfig["TokenEndpoint"]) 
+                        ? Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("Spotify configuration available")
+                        : Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Unhealthy("Spotify configuration missing");
+                });
 
             builder.Services.AddHttpClient("Spotify", client =>
             {
@@ -133,6 +163,8 @@ namespace SpotifyTrendsApp.Server
 
             app.UseAuthorization();
 
+            // Add health check endpoint
+            app.MapHealthChecks("/health");
 
             app.MapControllers();
 
