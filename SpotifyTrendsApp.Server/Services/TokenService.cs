@@ -29,9 +29,15 @@ public class TokenService : ITokenService
     {
         try
         {
-            var clientId = _configuration["Spotify:ClientId"] ?? throw new InvalidOperationException("ClientId is not configured");
-            var clientSecret = _configuration["Spotify:ClientSecret"] ?? throw new InvalidOperationException("ClientSecret is not configured");
-            var redirectUri = _configuration["Spotify:RedirectUri"] ?? throw new InvalidOperationException("RedirectUri is not configured");
+            var clientId = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_ID") 
+                ?? _configuration["Spotify:ClientId"] 
+                ?? throw new InvalidOperationException("SPOTIFY_CLIENT_ID is not configured");
+            var clientSecret = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_SECRET") 
+                ?? _configuration["Spotify:ClientSecret"] 
+                ?? throw new InvalidOperationException("SPOTIFY_CLIENT_SECRET is not configured");
+            var redirectUri = Environment.GetEnvironmentVariable("SPOTIFY_REDIRECT_URI") 
+                ?? _configuration["Spotify:RedirectUri"] 
+                ?? throw new InvalidOperationException("SPOTIFY_REDIRECT_URI is not configured");
             var tokenEndpoint = _configuration["Spotify:TokenEndpoint"] ?? throw new InvalidOperationException("TokenEndpoint is not configured");
 
             _logger.LogInformation("Requesting access token for authorization code");

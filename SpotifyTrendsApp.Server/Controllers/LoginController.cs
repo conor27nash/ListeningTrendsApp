@@ -27,9 +27,17 @@ namespace SpotifyTrendsApp.Server.Controllers
         [HttpGet("connect")]
         public IActionResult Connect()
         {
-            var clientId = _config["Spotify:ClientId"];
-            var redirectUri = _config["Spotify:RedirectUri"];
+            var clientId = Environment.GetEnvironmentVariable("SPOTIFY_CLIENT_ID") 
+                ?? _config["Spotify:ClientId"];
+            var redirectUri = Environment.GetEnvironmentVariable("SPOTIFY_REDIRECT_URI") 
+                ?? _config["Spotify:RedirectUri"];
             var scopes = _config["Spotify:Scopes"] ?? "user-top-read";
+            
+            if (string.IsNullOrEmpty(clientId))
+                return BadRequest("Spotify ClientId is not configured");
+            if (string.IsNullOrEmpty(redirectUri))
+                return BadRequest("Spotify RedirectUri is not configured");
+                
             var state = Guid.NewGuid().ToString("N");
             var query = HttpUtility.ParseQueryString(string.Empty);
             query["client_id"] = clientId;
@@ -48,8 +56,14 @@ namespace SpotifyTrendsApp.Server.Controllers
             if (string.IsNullOrEmpty(code)) return BadRequest("Missing code");
             var tokenInfo = await _tokenService.GetAccessTokenAsync(code);
             if (tokenInfo == null) return BadRequest("Token exchange failed");
+            
             var jwtSection = _config.GetSection("Jwt");
-            var keyBytes = Encoding.UTF8.GetBytes(jwtSection.GetValue<string>("Key")!);
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") 
+                ?? jwtSection.GetValue<string>("Key");
+            if (string.IsNullOrEmpty(jwtKey))
+                return StatusCode(500, "JWT key is not configured");
+                
+            var keyBytes = Encoding.UTF8.GetBytes(jwtKey);
             var creds = new SigningCredentials(
                 new SymmetricSecurityKey(keyBytes),
                 SecurityAlgorithms.HmacSha256);
@@ -64,7 +78,9 @@ namespace SpotifyTrendsApp.Server.Controllers
                 expires: DateTime.UtcNow.AddMinutes(jwtSection.GetValue<int>("ExpiresInMinutes")),
                 signingCredentials: creds);
             var tokenString = new JwtSecurityTokenHandler().WriteToken(jwt);
-            var clientUrl = _config["ClientApp:BaseUrl"] ?? "http://localhost:5173";
+            var clientUrl = Environment.GetEnvironmentVariable("CLIENT_APP_BASE_URL") 
+                ?? _config["ClientApp:BaseUrl"] 
+                ?? "http://localhost:5173";
             return Redirect($"{clientUrl}/?token={tokenString}");
         }
 
@@ -96,8 +112,14 @@ namespace SpotifyTrendsApp.Server.Controllers
             if (string.IsNullOrEmpty(refreshToken))
                 return Unauthorized("No Spotify refresh token available");
             var updatedToken = await _tokenService.RefreshAccessTokenAsync(refreshToken);
+            
             var jwtSection = _config.GetSection("Jwt");
-            var keyBytes = Encoding.UTF8.GetBytes(jwtSection.GetValue<string>("Key")!);
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") 
+                ?? jwtSection.GetValue<string>("Key");
+            if (string.IsNullOrEmpty(jwtKey))
+                return StatusCode(500, "JWT key is not configured");
+                
+            var keyBytes = Encoding.UTF8.GetBytes(jwtKey);
             var creds = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256);
             var claims = new[] {
                 new Claim("access_token", updatedToken.AccessToken),
