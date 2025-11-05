@@ -1,0 +1,40 @@
+# Multi-stage build for Go services
+# Usage: Build with --build-arg SERVICE=<servicename>
+# Example: docker build --build-arg SERVICE=user -f Dockerfile.template -t user-service .
+
+FROM golang:1.21-alpine AS builder
+
+# Install build dependencies
+RUN apk add --no-cache git
+
+WORKDIR /app
+
+# Copy go mod files
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build argument for service name
+ARG SERVICE
+ENV SERVICE_NAME=${SERVICE}
+
+# Build the service
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /service ./cmd/${SERVICE_NAME}
+
+# Final stage
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+# Copy the binary from builder
+COPY --from=builder /service .
+
+# Expose port
+EXPOSE 5000
+
+# Run the service
+CMD ["./service"]

@@ -1,0 +1,125 @@
+version: '3.9'
+
+services:
+  # Client (React app - unchanged)
+  client:
+    build:
+      context: ../spotifytrendsapp.client
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../spotifytrendsapp.client:/app
+      - /app/node_modules
+    depends_on:
+      - server-go
+
+  # Gateway Server (Go)
+  server-go:
+    build:
+      context: .
+      dockerfile: Dockerfile.template
+      args:
+        SERVICE: server
+    ports:
+      - "5000:5000"
+    depends_on:
+      - topitems-go
+      - recentlyplayed-go
+      - track-go
+      - artist-go
+      - user-go
+      - analytics-go
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TOPITEMS_SERVICE_URL=http://topitems-go:5000
+      - RECENTLYPLAYED_SERVICE_URL=http://recentlyplayed-go:5000
+      - TRACK_SERVICE_URL=http://track-go:5000
+      - ARTIST_SERVICE_URL=http://artist-go:5000
+      - USER_SERVICE_URL=http://user-go:5000
+      - ANALYTICS_SERVICE_URL=http://analytics-go:5000
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
+      - JWT_KEY=${JWT_KEY}
+      - LOG_LEVEL=info
+
+  # TopItems Service (Go)
+  topitems-go:
+    build:
+      context: .
+      dockerfile: Dockerfile.template
+      args:
+        SERVICE: topitems
+    expose:
+      - "5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - LOG_LEVEL=info
+
+  # RecentlyPlayed Service (Go)
+  recentlyplayed-go:
+    build:
+      context: .
+      dockerfile: Dockerfile.template
+      args:
+        SERVICE: recentlyplayed
+    expose:
+      - "5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - LOG_LEVEL=info
+
+  # Track Service (Go)
+  track-go:
+    build:
+      context: .
+      dockerfile: Dockerfile.template
+      args:
+        SERVICE: track
+    expose:
+      - "5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - LOG_LEVEL=info
+
+  # Artist Service (Go)
+  artist-go:
+    build:
+      context: .
+      dockerfile: Dockerfile.template
+      args:
+        SERVICE: artist
+    expose:
+      - "5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - LOG_LEVEL=info
+
+  # User Service (Go)
+  user-go:
+    build:
+      context: .
+      dockerfile: Dockerfile.template
+      args:
+        SERVICE: user
+    expose:
+      - "5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - LOG_LEVEL=info
+
+  # Analytics Service (Go)
+  analytics-go:
+    build:
+      context: .
+      dockerfile: Dockerfile.template
+      args:
+        SERVICE: analytics
+    expose:
+      - "5000"
+    depends_on:
+      - topitems-go
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TOPITEMS_SERVICE_URL=http://topitems-go:5000
+      - LOG_LEVEL=info
