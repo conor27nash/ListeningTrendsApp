@@ -1,0 +1,23 @@
+# Ignore development files
+.git
+.gitignore
+.env
+.env.example
+README.md
+docs/
+
+# Ignore build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
